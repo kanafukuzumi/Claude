@@ -357,63 +357,7 @@ footer{background:#0F172A;color:#475569;text-align:center;padding:18px;font-size
 <!-- QUESTIONS -->
 <section id="sec-q">
   <div class="sec-head">課題の4つの問いへの整理</div>
-  <div class="q-grid">
-    <div class="q-card">
-      <div class="q-num">Question 01</div>
-      <div class="q-title">今の業務フローの中で、人が判断すべきところはどこか</div>
-      <div class="q-body">
-        <p>75業務中 <strong id="q1-h">—</strong> 件が<span class="qt qt-h">人</span>判断。主な領域：</p>
-        <hr class="q-sep">
-        <ul>
-          <li><strong>コンテンツ設計（P0）</strong> — 改版方針・動画更新要否・設問意図。品質と方向性に直結。</li>
-          <li><strong>シフト確定（P1）</strong> — 欠員リスクや全体バランスの総合判断。</li>
-          <li><strong>当日ファシリテーション（P3）</strong> — 場の空気・参加者状態への臨機応変な対応。</li>
-          <li><strong>Bot未解決の個別対応（P3）</strong> — Botで解決できなかったケースのエスカレーション先。</li>
-          <li><strong>開催後の判断（P4/P5）</strong> — カット要否・フォロー優先度・レポート解釈・振り返り。</li>
-        </ul>
-      </div>
-    </div>
-    <div class="q-card">
-      <div class="q-num">Question 02</div>
-      <div class="q-title">どこをAIに任せて、どこは人がやるか</div>
-      <div class="q-body">
-        <p>対応方針の内訳：</p>
-        <div style="margin:10px 0;" id="q2-bars"></div>
-        <hr class="q-sep">
-        <p><span class="qt qt-a">AI自動化</span> 定型送付・収集・設定・集計・レポート生成など判断不要な業務。</p>
-        <p style="margin-top:5px;"><span class="qt qt-m">人＋AI効率化</span> たたき案生成→人が確認・修正するフロー。コンテンツ作成・依頼文整理など。</p>
-        <p style="margin-top:5px;"><span class="qt qt-h">人が保持</span> 設計・判断・ファシリテーション・エスカレーション対応。</p>
-      </div>
-    </div>
-    <div class="q-card">
-      <div class="q-num">Question 03</div>
-      <div class="q-title">そもそも、今のやり方自体ベストなのか</div>
-      <div class="q-body">
-        <p><span class="qt qt-w">改善余地：高</span> が <strong id="q3-h">—</strong> 件存在。主な課題：</p>
-        <hr class="q-sep">
-        <ul>
-          <li><strong>自動化候補なのに未実装</strong> — Zoomチャット自動送付・Discord自動リアクション・アンケート集計は自動化可能だが手動対応が残っている。</li>
-          <li><strong>スライド・マニュアルの更新フロー</strong> — 「作成」と「更新」が分離できておらずAI活用タイミングが曖昧。</li>
-          <li><strong>5-10（不参加者フォロー）が未実装</strong> — DAY0出席→DAY1-3不参加者へのフォローは設計ができていない。</li>
-          <li><strong>共有リンク管理の属人化</strong> — 平時業務にもかかわらず最新リンク一元管理は1人のみ把握。</li>
-        </ul>
-      </div>
-    </div>
-    <div class="q-card">
-      <div class="q-num">Question 04</div>
-      <div class="q-title">この既存フローを理解しているメンバーの範囲はどこまでか</div>
-      <div class="q-body">
-        <p>理解者範囲の内訳：</p>
-        <div style="margin:10px 0;" id="q4-bars"></div>
-        <hr class="q-sep">
-        <ul>
-          <li><strong style="color:#E11D48;">P0（全体設計・平時業務）が最も属人化</strong> — コンテンツ設計・動画・マニュアル管理の大半が「1人のみ」。担当者が抜けると業務が止まる。</li>
-          <li><strong>P3（当日運営）は比較的共有済</strong> — 実施頻度が高くチームへの浸透度が高い。</li>
-          <li><strong>5-10（不参加者フォロー）は「未整理」</strong> — フロー自体が存在しないため理解者が0の状態。</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <img src="q-summary.png" alt="課題の4つの問いへの整理" style="width:100%;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.1);display:block;">
 </section>
 
 <hr class="sec-sep">
@@ -844,20 +788,7 @@ function makeBar(label,count,total,color){
     <span class="q-bv">${count}</span>
   </div>`;
 }
-function renderQ(){
-  const n=TASKS.length;
-  document.getElementById('q1-h').textContent=TASKS.filter(t=>t.decisionMaker==='人').length;
-  document.getElementById('q3-h').textContent=TASKS.filter(t=>t.improvement==='高').length;
-  document.getElementById('q2-bars').innerHTML=
-    makeBar('自動化',TASKS.filter(t=>t.policy==='自動化').length,n,'var(--ai)')+
-    makeBar('効率化',TASKS.filter(t=>t.policy==='効率化').length,n,'var(--mixed)')+
-    makeBar('人維持', TASKS.filter(t=>t.policy==='維持').length,n,'#94A3B8')+
-    makeBar('要設計', TASKS.filter(t=>t.policy==='要設計').length,n,'#E11D48');
-  document.getElementById('q4-bars').innerHTML=
-    makeBar('チーム共有済',TASKS.filter(t=>t.knownBy==='チーム共有済').length,n,'var(--ai)')+
-    makeBar('1人のみ',    TASKS.filter(t=>t.knownBy==='1人のみ').length,n,'#E11D48')+
-    makeBar('未整理',     TASKS.filter(t=>t.knownBy==='未整理').length,n,'#F59E0B');
-}
+function renderQ(){}
 
 // ══════════════════════════════════════════════
 //  IMPROVEMENT
