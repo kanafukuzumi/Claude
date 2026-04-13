@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サポート会 業務フロー・AI活用整理 | 課題提出資料</title>
+<style>
+:root{
+  --human:#2563EB;--human-bg:#EFF6FF;--human-light:#BFDBFE;
+  --ai:#059669;   --ai-bg:#ECFDF5;   --ai-light:#A7F3D0;
+  --mixed:#D97706;--mixed-bg:#FFFBEB;--mixed-light:#FDE68A;
+  --auto-bg:#D1FAE5;--auto-tx:#065F46;
+  --eff-bg:#FEF3C7; --eff-tx:#92400E;
+  --keep-bg:#F1F5F9;--keep-tx:#475569;
+  --dsn-bg:#FFE4E6; --dsn-tx:#9F1239;
+  --p0:#6B7280;--p1:#2563EB;--p2:#CA8A04;--p3:#EA580C;--p4:#7C3AED;--p5:#16A34A;
+  --ev-common:#374151;--ev-nyugaku:#7C3AED;--ev-road:#1D4ED8;--ev-guide:#B45309;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Hiragino Sans',sans-serif;background:#F1F5F9;color:#1E293B;line-height:1.6;font-size:14px;}
+
+/* ── HEADER ── */
+.pg-header{background:linear-gradient(135deg,#0F172A 0%,#1E3A5F 100%);color:white;padding:44px 0 36px;}
+.container{max-width:1200px;margin:0 auto;padding:0 32px;}
+.pg-header h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px;}
+.pg-header .lead{font-size:12px;color:#94A3B8;margin-bottom:22px;}
+.hd-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+.hd-tag{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#CBD5E1;font-size:11px;padding:3px 10px;border-radius:16px;}
+.hd-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+.hd-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:12px 16px;}
+.hd-box .lb{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#64748B;margin-bottom:3px;}
+.hd-box .vl{font-size:12px;color:#E2E8F0;font-weight:500;}
+
+/* ── STATS ── */
+#sec-stats{padding:28px 0 0;}
+.stats-row{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:10px;}
+.sc{background:white;border-radius:8px;padding:14px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.06);border-top:3px solid #E2E8F0;}
+.sc.s-total{border-top-color:#0F172A;}
+.sc.s-human{border-top-color:var(--human);}
+.sc.s-ai{border-top-color:var(--ai);}
+.sc.s-mixed{border-top-color:var(--mixed);}
+.sc.s-auto{border-top-color:var(--ai);}
+.sc.s-eff{border-top-color:var(--mixed);}
+.sc.s-keep{border-top-color:#94A3B8;}
+.sc-num{font-size:28px;font-weight:800;color:#0F172A;}
+.sc-lb{font-size:10px;color:#64748B;margin-top:2px;}
+
+/* ── FILTERS ── */
+#sec-filter{padding:20px 0;}
+.fw{background:white;border-radius:10px;padding:16px 20px;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.fr{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.fr:last-child{margin-bottom:0;}
+.fr-lb{font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.08em;min-width:70px;}
+.chip{padding:3px 10px;border-radius:16px;font-size:11px;font-weight:500;cursor:pointer;border:1.5px solid #E2E8F0;background:white;color:#64748B;transition:all .12s;}
+.chip:hover{border-color:#94A3B8;}
+.chip.on{border-color:transparent;color:white;}
+.chip[data-v="全て"].on{background:#0F172A;}
+.chip[data-g="dm"][data-v="人"].on{background:var(--human);}
+.chip[data-g="dm"][data-v="AI"].on{background:var(--ai);}
+.chip[data-g="dm"][data-v="人＋AI"].on{background:var(--mixed);}
+.chip[data-g="po"][data-v="自動化"].on{background:var(--ai);}
+.chip[data-g="po"][data-v="効率化"].on{background:var(--mixed);}
+.chip[data-g="po"][data-v="維持"].on{background:#64748B;}
+.chip[data-g="po"][data-v="要設計"].on{background:#E11D48;}
+.chip[data-g="ev"][data-v="共通"].on{background:var(--ev-common);}
+.chip[data-g="ev"][data-v="入学式"].on{background:var(--ev-nyugaku);}
+.chip[data-g="ev"][data-v="ロードマップ"].on{background:var(--ev-road);}
+.chip[data-g="ev"][data-v="ガイドツアー"].on{background:var(--ev-guide);}
+.chip-reset{padding:3px 10px;border-radius:16px;font-size:11px;cursor:pointer;border:1.5px dashed #E2E8F0;background:transparent;color:#94A3B8;margin-left:auto;}
+.chip-reset:hover{border-color:#94A3B8;color:#475569;}
+.fc{font-size:11px;color:#94A3B8;}
+
+/* ── VIEW TOGGLE ── */
+.view-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.view-title{font-size:16px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:8px;}
+.view-title::before{content:'';width:4px;height:20px;background:var(--p1);border-radius:2px;display:block;}
+.view-tabs{display:flex;gap:6px;}
+.vtab{padding:5px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #E2E8F0;background:white;color:#64748B;transition:all .12s;}
+.vtab:hover{border-color:#94A3B8;}
+.vtab.on{background:#0F172A;color:white;border-color:#0F172A;}
+
+/* ── PHASE BLOCK ── */
+.phase-block{background:white;border-radius:12px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.06);overflow:hidden;}
+.ph-head{padding:16px 20px;cursor:pointer;user-select:none;transition:background .1s;}
+.ph-head:hover{background:#F8FAFC;}
+.ph-head-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.ph-left{display:flex;align-items:center;gap:12px;}
+.ph-badge{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:white;flex-shrink:0;}
+.pp0{background:var(--p0);}
+.pp1{background:var(--p1);}
+.pp2{background:var(--p2);}
+.pp3{background:var(--p3);}
+.pp4{background:var(--p4);}
+.pp5{background:var(--p5);}
+.ph-name{font-size:14px;font-weight:700;color:#0F172A;}
+.ph-sub{font-size:11px;color:#94A3B8;margin-top:1px;}
+.ph-right{display:flex;align-items:center;gap:10px;}
+.ph-dominant{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;}
+.ph-dominant.dom-human{background:var(--human-bg);color:var(--human);}
+.ph-dominant.dom-ai{background:var(--ai-bg);color:var(--ai);}
+.ph-dominant.dom-mixed{background:var(--mixed-bg);color:var(--mixed);}
+.ph-arr{font-size:16px;color:#CBD5E1;transition:transform .2s;}
+.ph-arr.open{transform:rotate(90deg);}
+
+/* ── PHASE STATS BAR ── */
+.ph-statsbar{display:flex;align-items:center;gap:10px;}
+.ph-bar-wrap{flex:1;height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden;display:flex;}
+.ph-bar-seg{height:100%;transition:width .3s;}
+.ph-bar-legend{display:flex;gap:10px;}
+.ph-bar-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#64748B;}
+.ph-bar-dot{width:8px;height:8px;border-radius:2px;}
+
+/* ── PHASE BODY ── */
+.ph-body{border-top:1px solid #F1F5F9;}
+.ph-body.hidden{display:none;}
+
+/* ── SUB GROUP ── */
+.sg-block{padding:0 20px;}
+.sg-head{display:flex;align-items:center;gap:8px;padding:14px 0 8px;border-bottom:1px solid #F8FAFC;}
+.sg-head:not(:first-child){margin-top:6px;}
+.sg-icon{width:5px;height:16px;border-radius:2px;background:#E2E8F0;}
+.sg-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94A3B8;}
+.sg-count{font-size:10px;color:#CBD5E1;}
+
+/* ══════════════════════════════════════
+   TIMELINE VIEW
+══════════════════════════════════════ */
+.view-timeline .tl-list{display:flex;flex-direction:column;padding:6px 0 16px;position:relative;}
+.view-timeline .tl-list::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:#F1F5F9;border-radius:1px;}
+
+.view-timeline .tr{display:flex;align-items:flex-start;gap:0;padding:4px 0;position:relative;}
+.view-timeline .tr-dot{width:24px;height:24px;border-radius:50%;flex-shrink:0;margin-top:8px;border:2px solid white;box-shadow:0 0 0 2px var(--dot-color,#E2E8F0);background:white;position:relative;z-index:1;}
+.view-timeline .tr.dm-human .tr-dot{--dot-color:var(--human);background:var(--human-bg);}
+.view-timeline .tr.dm-ai .tr-dot{--dot-color:var(--ai);background:var(--ai-bg);}
+.view-timeline .tr.dm-mixed .tr-dot{--dot-color:var(--mixed);background:var(--mixed-bg);}
+
+.view-timeline .tr-main{flex:1;margin-left:10px;}
+.view-timeline .tr-top{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;cursor:pointer;transition:background .12s;}
+.view-timeline .tr-top:hover{background:#F8FAFC;}
+.view-timeline .tr-id{font-size:10px;color:#CBD5E1;font-weight:500;white-space:nowrap;min-width:38px;}
+.view-timeline .tr-name{font-size:13px;font-weight:600;color:#0F172A;flex:1;line-height:1.4;}
+.view-timeline .tr-badges{display:flex;gap:4px;flex-shrink:0;}
+.view-timeline .tr-toggle{font-size:14px;color:#CBD5E1;flex-shrink:0;transition:transform .15s;}
+.view-timeline .tr.open .tr-toggle{transform:rotate(45deg);color:#64748B;}
+
+.view-timeline .tr-detail{display:none;margin:0 12px 6px 12px;padding:12px 14px;background:#F8FAFC;border-radius:6px;border-left:3px solid #E2E8F0;}
+.view-timeline .tr.open .tr-detail{display:block;}
+.view-timeline .tr.dm-human.open .tr-detail{border-left-color:var(--human-light);}
+.view-timeline .tr.dm-ai.open .tr-detail{border-left-color:var(--ai-light);}
+.view-timeline .tr.dm-mixed.open .tr-detail{border-left-color:var(--mixed-light);}
+.view-timeline .td-row{display:grid;grid-template-columns:90px 1fr;gap:6px;font-size:12px;margin-bottom:5px;}
+.view-timeline .td-row:last-child{margin-bottom:0;}
+.view-timeline .td-k{color:#94A3B8;font-weight:500;}
+.view-timeline .td-v{color:#334155;}
+.view-timeline .td-v.none{color:#CBD5E1;font-style:italic;}
+
+/* ══════════════════════════════════════
+   CARD VIEW (2col)
+══════════════════════════════════════ */
+.view-card .card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 20px 20px;}
+.view-card .cc{border:1px solid #E8EFF5;border-radius:8px;background:white;overflow:hidden;}
+.view-card .cc-top{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;transition:background .1s;}
+.view-card .cc-top:hover{background:#F8FAFC;}
+.view-card .cc-stripe{width:3px;height:36px;border-radius:2px;flex-shrink:0;}
+.view-card .dm-human .cc-stripe{background:var(--human);}
+.view-card .dm-ai .cc-stripe{background:var(--ai);}
+.view-card .dm-mixed .cc-stripe{background:var(--mixed);}
+.view-card .cc-id{font-size:10px;color:#CBD5E1;white-space:nowrap;}
+.view-card .cc-name{font-size:12px;font-weight:600;color:#0F172A;flex:1;line-height:1.4;}
+.view-card .cc-badges{display:flex;gap:3px;flex-shrink:0;}
+.view-card .cc-toggle{font-size:13px;color:#CBD5E1;flex-shrink:0;transition:transform .15s;}
+.view-card .cc.open .cc-toggle{transform:rotate(45deg);color:#64748B;}
+.view-card .cc-detail{display:none;padding:10px 14px 14px;border-top:1px solid #F1F5F9;background:#F8FAFC;}
+.view-card .cc.open .cc-detail{display:block;}
+.view-card .cd-row{display:grid;grid-template-columns:80px 1fr;gap:4px;font-size:11px;margin-bottom:4px;}
+.view-card .cd-k{color:#94A3B8;font-weight:500;}
+.view-card .cd-v{color:#334155;}
+.view-card .cd-v.none{color:#CBD5E1;font-style:italic;}
+
+/* ══════════════════════════════════════
+   LIST VIEW
+══════════════════════════════════════ */
+.view-list .lt-table{width:100%;border-collapse:collapse;padding:0 20px 20px;display:block;}
+.view-list .lt-head{display:grid;grid-template-columns:60px 1fr 100px 90px 90px 28px;gap:0;padding:7px 20px;background:#F8FAFC;border-bottom:1px solid #E2E8F0;font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;}
+.view-list .lt-row{display:grid;grid-template-columns:60px 1fr 100px 90px 90px 28px;gap:0;padding:9px 20px;border-bottom:1px solid #F8FAFC;align-items:center;cursor:pointer;transition:background .1s;}
+.view-list .lt-row:hover{background:#F8FAFC;}
+.view-list .lt-row.open{background:#F8FAFC;}
+.view-list .lt-id{font-size:10px;color:#CBD5E1;}
+.view-list .lt-name{font-size:12px;font-weight:500;color:#0F172A;padding-right:12px;line-height:1.4;}
+.view-list .lt-ev,.view-list .lt-dm,.view-list .lt-po{display:flex;align-items:center;}
+.view-list .lt-tog{font-size:13px;color:#CBD5E1;text-align:center;transition:transform .15s;}
+.view-list .lt-row.open .lt-tog{transform:rotate(45deg);color:#64748B;}
+.view-list .lt-detail{display:none;grid-column:1/-1;padding:10px 60px 14px;background:#F8FAFC;}
+.view-list .lt-row.open+.lt-detail-row .lt-detail{display:block;}
+.lt-detail-row{background:#F8FAFC;border-bottom:1px solid #E8F0F8;}
+.lt-detail-inner{padding:10px 60px 14px;font-size:12px;}
+.lt-di-row{display:grid;grid-template-columns:90px 1fr;gap:6px;margin-bottom:4px;}
+.lt-di-k{color:#94A3B8;font-weight:500;}
+.lt-di-v{color:#334155;}
+.lt-di-v.none{color:#CBD5E1;font-style:italic;}
+
+/* ── BADGES ── */
+.badge{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;white-space:nowrap;}
+.bd-human{background:var(--human-bg);color:var(--human);}
+.bd-ai{background:var(--ai-bg);color:var(--ai);}
+.bd-mixed{background:var(--mixed-bg);color:var(--mixed);}
+.bd-auto{background:var(--auto-bg);color:var(--auto-tx);}
+.bd-eff{background:var(--eff-bg);color:var(--eff-tx);}
+.bd-keep{background:var(--keep-bg);color:var(--keep-tx);}
+.bd-dsn{background:var(--dsn-bg);color:var(--dsn-tx);}
+.bd-ev-common{background:#F1F5F9;color:var(--ev-common);}
+.bd-ev-nyugaku{background:#F3EFFE;color:var(--ev-nyugaku);}
+.bd-ev-road{background:#EFF6FF;color:var(--ev-road);}
+.bd-ev-guide{background:#FEF3C7;color:var(--ev-guide);}
+
+/* ── QUESTIONS ── */
+#sec-q{padding:20px 0;}
+.sec-head{font-size:16px;font-weight:700;color:#0F172A;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.sec-head::before{content:'';width:4px;height:20px;background:var(--p1);border-radius:2px;display:block;}
+.q-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.q-card{background:white;border-radius:10px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.q-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p1);margin-bottom:6px;}
+.q-title{font-size:13px;font-weight:700;color:#0F172A;margin-bottom:12px;line-height:1.6;}
+.q-body{font-size:12px;color:#475569;line-height:1.8;}
+.q-body ul{padding-left:16px;}
+.q-body li{margin-bottom:4px;}
+.q-body strong{color:#0F172A;}
+.qt{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600;margin:0 1px;}
+.qt-h{background:var(--human-bg);color:var(--human);}
+.qt-a{background:var(--ai-bg);color:var(--ai);}
+.qt-m{background:var(--mixed-bg);color:var(--mixed);}
+.qt-w{background:#FEF3C7;color:#92400E;}
+.q-sep{border:none;border-top:1px solid #F1F5F9;margin:10px 0;}
+.q-bar{display:flex;align-items:center;gap:8px;font-size:11px;width:100%;margin-bottom:5px;}
+.q-bl{width:60px;color:#64748B;flex-shrink:0;}
+.q-bt{flex:1;height:7px;background:#F1F5F9;border-radius:3px;overflow:hidden;}
+.q-bf{height:100%;border-radius:3px;}
+.q-bv{width:30px;text-align:right;color:#64748B;}
+
+/* ── IMPROVEMENT ── */
+#sec-imp{padding:0 0 20px;}
+.imp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.imp-card{background:white;border-radius:10px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.imp-hd{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.imp-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.imp-icon.auto{background:var(--auto-bg);}
+.imp-icon.eff{background:var(--eff-bg);}
+.imp-icon.keep{background:var(--keep-bg);}
+.imp-title{font-size:13px;font-weight:700;color:#0F172A;}
+.imp-cnt{font-size:10px;color:#94A3B8;}
+.imp-list{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;}
+.imp-item{font-size:11px;color:#334155;padding:7px 10px;background:#F8FAFC;border-radius:5px;line-height:1.5;}
+.imp-iid{color:#CBD5E1;margin-right:5px;}
+.imp-note{font-size:10px;color:#94A3B8;margin-top:2px;}
+
+/* ── LEGEND ── */
+#sec-leg{padding:0 0 44px;}
+.leg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.leg-card{background:white;border-radius:10px;padding:18px 20px;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.leg-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94A3B8;margin-bottom:12px;}
+.leg-items{display:flex;flex-direction:column;gap:8px;}
+.leg-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;}
+.leg-sw{width:12px;height:12px;border-radius:2px;flex-shrink:0;margin-top:3px;}
+.leg-info strong{font-weight:600;color:#0F172A;margin-right:6px;}
+.leg-info span{color:#64748B;}
+
+/* ── MISC ── */
+.section{padding:24px 0 0;}
+.sec-sep{border:none;border-top:1px solid #E2E8F0;margin:4px 0 20px;}
+.no-results{text-align:center;padding:24px;color:#94A3B8;font-size:12px;}
+footer{background:#0F172A;color:#475569;text-align:center;padding:18px;font-size:11px;margin-top:24px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="pg-header">
+  <div class="container">
+    <h1>サポート会 業務フロー・AI活用整理</h1>
+    <p class="lead">課題提出資料 ── 人とAIの役割分担設計</p>
+    <div class="hd-tags">
+      <span class="hd-tag">入学式</span>
+      <span class="hd-tag">ロードマップ作成会</span>
+      <span class="hd-tag">学習ガイドツアー</span>
+    </div>
+    <div class="hd-meta">
+      <div class="hd-box">
+        <div class="lb">課題ゴール</div>
+        <div class="vl">AIに何を任せて、自分たちは何をやるか、チームで決められるようになること</div>
+      </div>
+      <div class="hd-box">
+        <div class="lb">前提定義</div>
+        <div class="vl">自動化 ＝ 人がノータッチ／効率化 ＝ 人の判断を残しスピードを上げる</div>
+      </div>
+      <div class="hd-box">
+        <div class="lb">フェーズ</div>
+        <div class="vl">P0 全体設計 → P1 日程調整 → P2 開催準備 → P3 当日 → P4 配信対応 → P5 振り返り</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+<!-- STATS -->
+<section id="sec-stats">
+  <div class="stats-row" id="stats-row"></div>
+</section>
+
+<!-- FILTERS -->
+<section id="sec-filter" class="section">
+  <div class="fw">
+    <div class="fr">
+      <span class="fr-lb">判断主体</span>
+      <button class="chip on" data-g="dm" data-v="全て">すべて</button>
+      <button class="chip" data-g="dm" data-v="人">人</button>
+      <button class="chip" data-g="dm" data-v="AI">AI</button>
+      <button class="chip" data-g="dm" data-v="人＋AI">人＋AI</button>
+    </div>
+    <div class="fr">
+      <span class="fr-lb">対応方針</span>
+      <button class="chip on" data-g="po" data-v="全て">すべて</button>
+      <button class="chip" data-g="po" data-v="自動化">自動化</button>
+      <button class="chip" data-g="po" data-v="効率化">効率化</button>
+      <button class="chip" data-g="po" data-v="維持">人対応維持</button>
+      <button class="chip" data-g="po" data-v="要設計">要設計</button>
+    </div>
+    <div class="fr">
+      <span class="fr-lb">サポート会</span>
+      <button class="chip on" data-g="ev" data-v="全て">すべて</button>
+      <button class="chip" data-g="ev" data-v="共通">共通</button>
+      <button class="chip" data-g="ev" data-v="入学式">入学式</button>
+      <button class="chip" data-g="ev" data-v="ロードマップ">ロードマップ</button>
+      <button class="chip" data-g="ev" data-v="ガイドツアー">ガイドツアー</button>
+      <button class="chip-reset" id="btn-reset">リセット</button>
+      <span class="fc" id="filter-count"></span>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section id="sec-flow" class="section">
+  <div class="view-bar">
+    <div class="view-title">フェーズ別 業務フロー</div>
+    <div class="view-tabs">
+      <button class="vtab on" data-view="timeline">タイムライン</button>
+      <button class="vtab" data-view="card">カード</button>
+      <button class="vtab" data-view="list">リスト</button>
+    </div>
+  </div>
+  <div id="flow-container"></div>
+</section>
+
+<hr class="sec-sep">
+
+<!-- QUESTIONS -->
+<section id="sec-q">
+  <div class="sec-head">課題の4つの問いへの整理</div>
+  <div class="q-grid">
+    <div class="q-card">
+      <div class="q-num">Question 01</div>
+      <div class="q-title">今の業務フローの中で、人が判断すべきところはどこか</div>
+      <div class="q-body">
+        <p>75業務中 <strong id="q1-h">—</strong> 件が<span class="qt qt-h">人</span>判断。主な領域：</p>
+        <hr class="q-sep">
+        <ul>
+          <li><strong>コンテンツ設計（P0）</strong> — 改版方針・動画更新要否・設問意図。品質と方向性に直結。</li>
+          <li><strong>シフト確定（P1）</strong> — 欠員リスクや全体バランスの総合判断。</li>
+          <li><strong>当日ファシリテーション（P3）</strong> — 場の空気・参加者状態への臨機応変な対応。</li>
+          <li><strong>Bot未解決の個別対応（P3）</strong> — Botで解決できなかったケースのエスカレーション先。</li>
+          <li><strong>開催後の判断（P4/P5）</strong> — カット要否・フォロー優先度・レポート解釈・振り返り。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question 02</div>
+      <div class="q-title">どこをAIに任せて、どこは人がやるか</div>
+      <div class="q-body">
+        <p>対応方針の内訳：</p>
+        <div style="margin:10px 0;" id="q2-bars"></div>
+        <hr class="q-sep">
+        <p><span class="qt qt-a">AI自動化</span> 定型送付・収集・設定・集計・レポート生成など判断不要な業務。</p>
+        <p style="margin-top:5px;"><span class="qt qt-m">人＋AI効率化</span> たたき案生成→人が確認・修正するフロー。コンテンツ作成・依頼文整理など。</p>
+        <p style="margin-top:5px;"><span class="qt qt-h">人が保持</span> 設計・判断・ファシリテーション・エスカレーション対応。</p>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question 03</div>
+      <div class="q-title">そもそも、今のやり方自体ベストなのか</div>
+      <div class="q-body">
+        <p><span class="qt qt-w">改善余地：高</span> が <strong id="q3-h">—</strong> 件存在。主な課題：</p>
+        <hr class="q-sep">
+        <ul>
+          <li><strong>自動化候補なのに未実装</strong> — Zoomチャット自動送付・Discord自動リアクション・アンケート集計は自動化可能だが手動対応が残っている。</li>
+          <li><strong>スライド・マニュアルの更新フロー</strong> — 「作成」と「更新」が分離できておらずAI活用タイミングが曖昧。</li>
+          <li><strong>5-10（不参加者フォロー）が未実装</strong> — DAY0出席→DAY1-3不参加者へのフォローは設計ができていない。</li>
+          <li><strong>共有リンク管理の属人化</strong> — 平時業務にもかかわらず最新リンク一元管理は1人のみ把握。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question 04</div>
+      <div class="q-title">この既存フローを理解しているメンバーの範囲はどこまでか</div>
+      <div class="q-body">
+        <p>理解者範囲の内訳：</p>
+        <div style="margin:10px 0;" id="q4-bars"></div>
+        <hr class="q-sep">
+        <ul>
+          <li><strong style="color:#E11D48;">P0（全体設計・平時業務）が最も属人化</strong> — コンテンツ設計・動画・マニュアル管理の大半が「1人のみ」。担当者が抜けると業務が止まる。</li>
+          <li><strong>P3（当日運営）は比較的共有済</strong> — 実施頻度が高くチームへの浸透度が高い。</li>
+          <li><strong>5-10（不参加者フォロー）は「未整理」</strong> — フロー自体が存在しないため理解者が0の状態。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sec-sep">
+
+<!-- IMPROVEMENT -->
+<section id="sec-imp">
+  <div class="sec-head">改善提案</div>
+  <div class="imp-grid">
+    <div class="imp-card">
+      <div class="imp-hd">
+        <div class="imp-icon auto">🤖</div>
+        <div><div class="imp-title">自動化できる業務</div><div class="imp-cnt" id="auto-cnt"></div></div>
+      </div>
+      <div class="imp-list" id="auto-list"></div>
+    </div>
+    <div class="imp-card">
+      <div class="imp-hd">
+        <div class="imp-icon eff">⚡</div>
+        <div><div class="imp-title">人＋AIで効率化できる業務</div><div class="imp-cnt" id="eff-cnt"></div></div>
+      </div>
+      <div class="imp-list" id="eff-list"></div>
+    </div>
+    <div class="imp-card">
+      <div class="imp-hd">
+        <div class="imp-icon keep">🧠</div>
+        <div><div class="imp-title">人が判断を持ち続けるべき業務</div><div class="imp-cnt" id="keep-cnt"></div></div>
+      </div>
+      <div class="imp-list" id="keep-list"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="sec-sep">
+
+<!-- LEGEND -->
+<section id="sec-leg">
+  <div class="sec-head">凡例</div>
+  <div class="leg-grid">
+    <div class="leg-card">
+      <div class="leg-title">判断主体</div>
+      <div class="leg-items">
+        <div class="leg-item"><div class="leg-sw" style="background:var(--human);"></div><div class="leg-info"><strong>人</strong><span>人の判断・経験・文脈が必要な業務</span></div></div>
+        <div class="leg-item"><div class="leg-sw" style="background:var(--ai);"></div><div class="leg-info"><strong>AI</strong><span>ルールが明確で人がノータッチでも完結する業務</span></div></div>
+        <div class="leg-item"><div class="leg-sw" style="background:var(--mixed);"></div><div class="leg-info"><strong>人＋AI</strong><span>AIでたたきや処理を担い、人が確認・修正・判断を加える業務</span></div></div>
+      </div>
+    </div>
+    <div class="leg-card">
+      <div class="leg-title">対応方針</div>
+      <div class="leg-items">
+        <div class="leg-item"><div class="leg-sw" style="background:var(--ai);"></div><div class="leg-info"><strong>自動化</strong><span>人が介在せずAIだけで完結させる。定型業務が対象。</span></div></div>
+        <div class="leg-item"><div class="leg-sw" style="background:var(--mixed);"></div><div class="leg-info"><strong>効率化</strong><span>人の判断を残しながらAIでスピードを上げる。</span></div></div>
+        <div class="leg-item"><div class="leg-sw" style="background:#94A3B8;"></div><div class="leg-info"><strong>人対応維持</strong><span>AIに任せるべきでなく、人が対応し続けることが適切。</span></div></div>
+        <div class="leg-item"><div class="leg-sw" style="background:#E11D48;"></div><div class="leg-info"><strong>要設計</strong><span>現状フロー自体が存在せず、設計から必要な業務。</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+<footer>サポート会 業務フロー・AI活用整理 ── 課題提出資料</footer>
+
+<script>
+// ══════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════
+const PHASES = [
+  {id:'P0',name:'全体設計・コンテンツ整備（平時）',cls:'pp0'},
+  {id:'P1',name:'日程・体制調整',cls:'pp1'},
+  {id:'P2',name:'開催前準備・告知',cls:'pp2'},
+  {id:'P3',name:'当日運営',cls:'pp3'},
+  {id:'P4',name:'開催後・アーカイブ配信',cls:'pp4'},
+  {id:'P5',name:'集計・振り返り・報告',cls:'pp5'},
+];
+
+const TASKS = [
+  // P0
+  {id:'0-8a', phaseId:'P0',group:'マニュアル整備',      eventType:'入学式',     order:1,  taskName:'マニュアルの改版内容・変更方針を決定する',                              taskDesc:'運用変更・品質向上の判断',             decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'変更内容・影響範囲の判断',     knownBy:'1人のみ',    improvement:'高'},
+  {id:'0-8b', phaseId:'P0',group:'マニュアル整備',      eventType:'入学式',     order:2,  taskName:'決定内容をもとにマニュアルを編集・更新する',                            taskDesc:'マニュアル本文の書き換え',             decisionMaker:'人＋AI',policy:'効率化', aiScope:'文章のたたき生成・誤字修正',      humanCheck:'内容の正確性・方針との一致',   knownBy:'1人のみ',    improvement:'中'},
+  {id:'0-9a', phaseId:'P0',group:'動画整備',            eventType:'入学式',     order:3,  taskName:'レクチャー動画の内容・構成を設計する',                                  taskDesc:'伝えること・順序を決める',             decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'学習目標との整合性',           knownBy:'1人のみ',    improvement:'低'},
+  {id:'0-9b', phaseId:'P0',group:'動画整備',            eventType:'入学式',     order:4,  taskName:'動画を撮影・編集・制作する',                                            taskDesc:'収録から書き出しまでの全工程',         decisionMaker:'人＋AI',policy:'効率化', aiScope:'字幕生成・カット編集補助',        humanCheck:'内容・品質・尺の確認',         knownBy:'1人のみ',    improvement:'中'},
+  {id:'0-9c', phaseId:'P0',group:'動画整備',            eventType:'入学式',     order:5,  taskName:'既存動画の内容を確認し更新要否を判断する',                              taskDesc:'情報の鮮度・正確性チェック',           decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'情報の陳腐化・修正要否',       knownBy:'1人のみ',    improvement:'中'},
+  {id:'0-9d', phaseId:'P0',group:'動画整備',            eventType:'入学式',     order:6,  taskName:'更新が必要な動画を修正・差し替える',                                    taskDesc:'差し替え箇所の編集・再収録',           decisionMaker:'人＋AI',policy:'効率化', aiScope:'編集作業の一部補助',             humanCheck:'修正内容の確認',               knownBy:'1人のみ',    improvement:'中'},
+  {id:'0-10a',phaseId:'P0',group:'スライド整備',        eventType:'共通',       order:7,  taskName:'スライドの構成・伝達内容を設計する',                                    taskDesc:'何を伝えるか・順序を決める',           decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'目的・伝達意図の妥当性',       knownBy:'チーム共有済',improvement:'低'},
+  {id:'0-10b',phaseId:'P0',group:'スライド整備',        eventType:'共通',       order:8,  taskName:'スライドをテンプレートをもとに作成する',                                taskDesc:'定型スライドの生成',                   decisionMaker:'人＋AI',policy:'効率化', aiScope:'テキスト案生成・レイアウト補助', humanCheck:'内容の正確性・ブランド整合',   knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-10c',phaseId:'P0',group:'スライド整備',        eventType:'共通',       order:9,  taskName:'既存スライドの内容を確認し修正箇所を特定する',                          taskDesc:'差分確認・要修正点の洗い出し',         decisionMaker:'人＋AI',policy:'効率化', aiScope:'変更点の差分抽出',               humanCheck:'修正優先度の判断',             knownBy:'チーム共有済',improvement:'中'},
+  {id:'0-10d',phaseId:'P0',group:'スライド整備',        eventType:'共通',       order:10, taskName:'スライドを修正・更新する',                                              taskDesc:'確定修正内容の反映',                   decisionMaker:'AI',    policy:'自動化', aiScope:'テキスト修正・整形の全工程',      humanCheck:'最終確認のみ',                 knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-11a',phaseId:'P0',group:'ワークシート整備',    eventType:'入学式',     order:11, taskName:'ワークシートの設問・構成をたたき台として設計する',                      taskDesc:'設問のたたき案をAI生成',               decisionMaker:'人＋AI',policy:'効率化', aiScope:'たたき案の生成',                 humanCheck:'設問意図・構成の妥当性',       knownBy:'1人のみ',    improvement:'高'},
+  {id:'0-11b',phaseId:'P0',group:'ワークシート整備',    eventType:'入学式',     order:12, taskName:'たたきを確認し内容・意図を調整する',                                    taskDesc:'設問の意味・順序を整える',             decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'設問の意図・受講者への影響',   knownBy:'1人のみ',    improvement:'低'},
+  {id:'0-11c',phaseId:'P0',group:'ワークシート整備',    eventType:'入学式',     order:13, taskName:'確定内容をもとにワークシートを作成・更新する',                          taskDesc:'フォーム/ドキュメントへの反映',        decisionMaker:'AI',    policy:'自動化', aiScope:'確定内容の転記・整形全般',        humanCheck:'誤字・フォーマット確認のみ',   knownBy:'1人のみ',    improvement:'高'},
+  {id:'0-12a',phaseId:'P0',group:'アンケート設計',      eventType:'共通',       order:14, taskName:'アンケートで何を測るか（目的・設問意図）を設計する',                    taskDesc:'計測目的・KPIとの接続',               decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'OKR・改善目的との整合性',     knownBy:'チーム共有済',improvement:'低'},
+  {id:'0-12b',phaseId:'P0',group:'アンケート設計',      eventType:'共通',       order:15, taskName:'設問のたたき案をAIで生成する',                                          taskDesc:'設問候補のドラフト生成',               decisionMaker:'AI',    policy:'自動化', aiScope:'設問案の全文生成',               humanCheck:'なし（たたきのみ）',           knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-12c',phaseId:'P0',group:'アンケート設計',      eventType:'共通',       order:16, taskName:'たたきを確認し設問を確定・更新する',                                    taskDesc:'設問の取捨選択・最終確定',             decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'設問の妥当性・設計意図',       knownBy:'チーム共有済',improvement:'低'},
+  {id:'0-13', phaseId:'P0',group:'リンク一元管理',      eventType:'入学式',     order:17, taskName:'動画・スライド・アンケート・ZoomのリンクをP0管理シートで一元管理する',  taskDesc:'最新リンクの集約・更新漏れ防止',       decisionMaker:'AI',    policy:'自動化', aiScope:'リンク収集・自動更新通知',        humanCheck:'最新性の最終確認',             knownBy:'1人のみ',    improvement:'高'},
+  // P1
+  {id:'0-1a', phaseId:'P1',group:'シフト管理',          eventType:'共通',       order:1,  taskName:'スタッフへシフト可否確認を送付・収集する',                              taskDesc:'全員への確認依頼と回答収集',           decisionMaker:'AI',    policy:'自動化', aiScope:'送付・リマインド・収集全般',      humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-1b', phaseId:'P1',group:'シフト管理',          eventType:'共通',       order:2,  taskName:'回答をもとに最終シフトを確定する',                                      taskDesc:'欠員・調整を含む意思決定',             decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'欠員リスク・全体バランス',     knownBy:'チーム共有済',improvement:'低'},
+  {id:'0-1c', phaseId:'P1',group:'シフト管理',          eventType:'共通',       order:3,  taskName:'確定シフトをスタッフへ通知する',                                        taskDesc:'確定内容の一斉送付',                   decisionMaker:'AI',    policy:'自動化', aiScope:'通知メッセージ送付全般',          humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-2a', phaseId:'P1',group:'秘書連携・依頼',      eventType:'共通',       order:4,  taskName:'秘書への依頼内容をテンプレートに沿って整理する',                        taskDesc:'日時・設定項目の整理',                 decisionMaker:'AI',    policy:'自動化', aiScope:'テンプレート埋め込み・整理',      humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-2b', phaseId:'P1',group:'秘書連携・依頼',      eventType:'共通',       order:5,  taskName:'整理した依頼内容を確認・送付する',                                      taskDesc:'秘書への正式依頼送信',                 decisionMaker:'人＋AI',policy:'効率化', aiScope:'送付文の自動整形',               humanCheck:'依頼内容の最終確認',           knownBy:'チーム共有済',improvement:'中'},
+  {id:'0-3',  phaseId:'P1',group:'設定・準備',          eventType:'共通',       order:6,  taskName:'確定した開催日程を社内カレンダーに反映する',                            taskDesc:'カレンダーへの日程登録',               decisionMaker:'AI',    policy:'自動化', aiScope:'シフト確定→カレンダー反映',      humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-4',  phaseId:'P1',group:'設定・準備',          eventType:'共通',       order:7,  taskName:'会員サイトに開催告知ページを作成する',                                  taskDesc:'テンプレから日程を差し替え',           decisionMaker:'人＋AI',policy:'効率化', aiScope:'定型ページの自動生成',           humanCheck:'日程・リンクの正確性',         knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-5a', phaseId:'P1',group:'設定・準備',          eventType:'共通',       order:8,  taskName:'日程・リンク整合性をチェックリストで自動検証する',                      taskDesc:'設定ミスの自動チェック',               decisionMaker:'AI',    policy:'自動化', aiScope:'整合性チェック全般',             humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-5b', phaseId:'P1',group:'設定・準備',          eventType:'共通',       order:9,  taskName:'検証結果を確認し問題の有無を判断する',                                  taskDesc:'チェック結果の解釈・対処判断',         decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'問題の影響度・対処要否',       knownBy:'チーム共有済',improvement:'低'},
+  {id:'0-6',  phaseId:'P1',group:'設定・準備',          eventType:'共通',       order:10, taskName:'開催用Zoomウェビナーをテンプレートをもとに設定する',                    taskDesc:'定型設定の実施',                       decisionMaker:'AI',    policy:'自動化', aiScope:'テンプレートから設定一括適用',   humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'0-7',  phaseId:'P1',group:'設定・準備',          eventType:'共通',       order:11, taskName:'開催前にモデレーターへ当日手順・タイムラインをSlackで共有する',          taskDesc:'事前案内の送付',                       decisionMaker:'AI',    policy:'自動化', aiScope:'Slackテンプレ送付全般',          humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  // P2
+  {id:'1-1',  phaseId:'P2',group:'LINE配信準備',        eventType:'入学式',     order:1,  taskName:'参加リンク付きLINEをエルメでスケジュール配信設定する',                  taskDesc:'スケジュール配信の設定',               decisionMaker:'AI',    policy:'自動化', aiScope:'スケジュール配信全般',           humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'1-2a', phaseId:'P2',group:'LINE配信準備',        eventType:'入学式',     order:2,  taskName:'配信メッセージのたたき案をAIで生成する',                                taskDesc:'LINEメッセージのドラフト',             decisionMaker:'AI',    policy:'自動化', aiScope:'メッセージ文の全文生成',          humanCheck:'なし（たたきのみ）',           knownBy:'チーム共有済',improvement:'高'},
+  {id:'1-2b', phaseId:'P2',group:'LINE配信準備',        eventType:'入学式',     order:3,  taskName:'たたきを確認・修正し送信内容を確定する',                                taskDesc:'配信前の最終確認・承認',               decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'メッセージ内容・リンクの正確性',knownBy:'チーム共有済',improvement:'低'},
+  {id:'1-3',  phaseId:'P2',group:'ページ・コンテンツ準備',eventType:'入学式',   order:4,  taskName:'入学式専用ページの日程・掲載情報を更新する',                            taskDesc:'日程更新等の定型作業',                 decisionMaker:'AI',    policy:'自動化', aiScope:'日程差し替え・ページ更新',        humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'1-4',  phaseId:'P2',group:'ページ・コンテンツ準備',eventType:'入学式',   order:5,  taskName:'参加者向けDiscord登録手順記事を準備する',                              taskDesc:'記事の確認と公開準備',                 decisionMaker:'AI',    policy:'自動化', aiScope:'動画→記事変換・準備全般',        humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'1-5',  phaseId:'P2',group:'ページ・コンテンツ準備',eventType:'入学式',   order:6,  taskName:'コース振り分けフォーム回答をもとにエルメのタグ・セグメントを自動付与する',taskDesc:'回答連動の自動セグメント管理',        decisionMaker:'AI',    policy:'自動化', aiScope:'タグ・セグメント付与の全工程',   humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'1-6',  phaseId:'P2',group:'ページ・コンテンツ準備',eventType:'入学式',   order:7,  taskName:'モデレーターが当日使用するレクチャー動画をローカル環境に準備する',       taskDesc:'当日環境への動画準備',                 decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'ファイル確認・再生テスト',     knownBy:'チーム共有済',improvement:'低'},
+  // P3 入学式
+  {id:'2-1',  phaseId:'P3',group:'進行・ファシリテーション',eventType:'入学式',  order:1,  taskName:'入学式DAY0の司会・場の進行を担当する',                                  taskDesc:'ライブ進行・臨機応変な対応',           decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'場の空気・進行状況',           knownBy:'1人のみ',    improvement:'低'},
+  {id:'2-2',  phaseId:'P3',group:'Zoomチャット・アンケート自動化',eventType:'入学式',order:2,taskName:'タイムラインに従いZoomチャットへ各種リンクを送付する',                taskDesc:'定型リンクのタイミング送付',           decisionMaker:'AI',    policy:'自動化', aiScope:'タイムライン連動の自動送付',      humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'2-3a', phaseId:'P3',group:'Discord・Bot対応',    eventType:'入学式',     order:3,  taskName:'FAQ・手順記事BotへDiscord登録に詰まった参加者を誘導する',               taskDesc:'Bot誘導による自己解決促進',            decisionMaker:'AI',    policy:'自動化', aiScope:'誘導メッセージ・Bot応答全般',    humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'2-3b', phaseId:'P3',group:'Discord・Bot対応',    eventType:'入学式',     order:4,  taskName:'Bot解決不可の参加者のDiscord登録を個別サポートする',                   taskDesc:'人による直接サポート',                 decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'問題の状況判断・対処',         knownBy:'チーム共有済',improvement:'中'},
+  {id:'2-4',  phaseId:'P3',group:'Discord・Bot対応',    eventType:'入学式',     order:5,  taskName:'参加者のDiscord投稿を確認しリアクションする',                          taskDesc:'投稿への反応・場の醸成',               decisionMaker:'AI',    policy:'自動化', aiScope:'自動リアクションBot全般',         humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'2-5a', phaseId:'P3',group:'Q&A・Bot対応',        eventType:'入学式',     order:6,  taskName:'質問BotでFAQベースの一次回答をする',                                    taskDesc:'Botによる自動一次回答',                decisionMaker:'AI',    policy:'自動化', aiScope:'FAQ照合・回答送信全般',          humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'2-5b', phaseId:'P3',group:'Q&A・Bot対応',        eventType:'入学式',     order:7,  taskName:'Bot未解決の質問を人がフォローする',                                     taskDesc:'人による二次対応',                     decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'回答内容の判断・エスカレ',     knownBy:'チーム共有済',improvement:'中'},
+  {id:'2-6a', phaseId:'P3',group:'Q&A・Bot対応',        eventType:'入学式',     order:8,  taskName:'参加者をBot診断へ誘導する（定型案内文送付）',                           taskDesc:'Bot診断への案内文送付',                decisionMaker:'AI',    policy:'自動化', aiScope:'定型案内文の自動送付',           humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'2-6b', phaseId:'P3',group:'Q&A・Bot対応',        eventType:'入学式',     order:9,  taskName:'診断結果をもとに個別フォローする',                                      taskDesc:'診断後の個別サポート',                 decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'結果の解釈・フォロー内容',     knownBy:'チーム共有済',improvement:'低'},
+  {id:'2-7',  phaseId:'P3',group:'Zoomチャット・アンケート自動化',eventType:'入学式',order:10,taskName:'アンケートURLをZoomチャットで適切なタイミングに送付する',            taskDesc:'アンケート配布のタイミング管理',       decisionMaker:'AI',    policy:'自動化', aiScope:'タイムライン連動の自動送付',      humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'2-8a', phaseId:'P3',group:'トラブル対応',        eventType:'入学式',     order:11, taskName:'FAQ・Bot記事へ誘導しトラブルの自己解決を促す',                         taskDesc:'トラブル初動の自動誘導',               decisionMaker:'AI',    policy:'自動化', aiScope:'FAQ誘導・Bot応答全般',          humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'2-8b', phaseId:'P3',group:'トラブル対応',        eventType:'入学式',     order:12, taskName:'解決しない場合のエスカレーション要否を判断し対応する',                  taskDesc:'エスカレーション判断・対処',           decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'問題の深刻度・対処方針',       knownBy:'チーム共有済',improvement:'低'},
+  // P3 ロードマップ
+  {id:'3-1',  phaseId:'P3',group:'進行・ファシリテーション',eventType:'ロードマップ',order:13,taskName:'ロードマップ作成会のワーク進行・フィードバックを担当する',            taskDesc:'ワーク進行・個別フィードバック',       decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'参加者の理解度・場の状況',     knownBy:'チーム共有済',improvement:'低'},
+  {id:'3-2a', phaseId:'P3',group:'操作サポート・誘導',  eventType:'ロードマップ',order:14, taskName:'FAQ・手順記事BotへハイページでつまずいたMB参加者を誘導する',           taskDesc:'Bot誘導による自己解決促進',            decisionMaker:'AI',    policy:'自動化', aiScope:'FAQ誘導・Bot応答全般',          humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'3-2b', phaseId:'P3',group:'操作サポート・誘導',  eventType:'ロードマップ',order:15, taskName:'Bot解決不可の参加者のハイページ操作を個別サポートする',                 taskDesc:'人による操作サポート',                 decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'問題の状況判断',               knownBy:'チーム共有済',improvement:'中'},
+  {id:'3-3',  phaseId:'P3',group:'操作サポート・誘導',  eventType:'ロードマップ',order:16, taskName:'参加者の質問をBotまたは相談室リンクに誘導する',                          taskDesc:'質問を適切な解決経路へ振り分け',       decisionMaker:'AI',    policy:'自動化', aiScope:'誘導テンプレ送付全般',           humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'3-4',  phaseId:'P3',group:'操作サポート・誘導',  eventType:'ロードマップ',order:17, taskName:'タイムラインに従いZoomチャットへリンクを送付する',                       taskDesc:'定型リンクのタイミング送付',           decisionMaker:'AI',    policy:'自動化', aiScope:'タイムライン連動の自動送付',      humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'3-5',  phaseId:'P3',group:'操作サポート・誘導',  eventType:'ロードマップ',order:18, taskName:'アンケートURLをタイミングに合わせて送付する',                           taskDesc:'アンケート配布のタイミング管理',       decisionMaker:'AI',    policy:'自動化', aiScope:'タイミング自動送付全般',          humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  // P3 ガイドツアー
+  {id:'4-1',  phaseId:'P3',group:'進行・ファシリテーション',eventType:'ガイドツアー',order:19,taskName:'学習ガイドツアーの進行・コンテンツ説明を担当する',                  taskDesc:'コンテンツ案内・学習相談対応',         decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'参加者の理解度・場の状況',     knownBy:'チーム共有済',improvement:'低'},
+  {id:'4-2',  phaseId:'P3',group:'操作サポート・誘導',  eventType:'ガイドツアー',order:20, taskName:'参加者の質問をBotまたは相談室リンクに誘導する（ガイドツアー）',          taskDesc:'質問を適切な解決経路へ振り分け',       decisionMaker:'AI',    policy:'自動化', aiScope:'誘導テンプレ送付全般',           humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'4-3',  phaseId:'P3',group:'操作サポート・誘導',  eventType:'ガイドツアー',order:21, taskName:'タイムラインに従いZoomチャットへリンクを送付する（ガイドツアー）',       taskDesc:'定型リンクのタイミング送付',           decisionMaker:'AI',    policy:'自動化', aiScope:'タイムライン連動の自動送付',      humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'4-4',  phaseId:'P3',group:'操作サポート・誘導',  eventType:'ガイドツアー',order:22, taskName:'アンケートURLをタイミングに合わせて送付する（ガイドツアー）',           taskDesc:'アンケート配布のタイミング管理',       decisionMaker:'AI',    policy:'自動化', aiScope:'タイミング自動送付全般',          humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  // P4
+  {id:'5-1a', phaseId:'P4',group:'動画確認・編集依頼',  eventType:'共通',       order:1,  taskName:'録画冒頭3秒以上の無音部分をAIで自動検出する',                           taskDesc:'冒頭無音の自動スキャン',               decisionMaker:'AI',    policy:'自動化', aiScope:'無音検出・報告の全工程',          humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-1b', phaseId:'P4',group:'動画確認・編集依頼',  eventType:'共通',       order:2,  taskName:'検出結果をもとにカット依頼の要否を判断する',                            taskDesc:'カット依頼判断',                       decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'カット箇所の確認・要否判断',   knownBy:'チーム共有済',improvement:'低'},
+  {id:'5-2',  phaseId:'P4',group:'動画確認・編集依頼',  eventType:'共通',       order:3,  taskName:'登壇終了後に秘書へアーカイブ動画のアップロードを依頼する',               taskDesc:'定型依頼の自動送付',                   decisionMaker:'AI',    policy:'自動化', aiScope:'依頼フロー全般',                 humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-3a', phaseId:'P4',group:'動画確認・編集依頼',  eventType:'共通',       order:4,  taskName:'録画内のトラブル箇所・編集範囲を特定する',                              taskDesc:'編集が必要な箇所の特定',               decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'編集要否・範囲の判断',         knownBy:'チーム共有済',improvement:'低'},
+  {id:'5-3b', phaseId:'P4',group:'動画確認・編集依頼',  eventType:'共通',       order:5,  taskName:'編集依頼内容をムーバーチームへ送付する',                                taskDesc:'編集依頼の送信',                       decisionMaker:'人＋AI',policy:'効率化', aiScope:'依頼文テンプレ生成',             humanCheck:'依頼内容・範囲の確認',         knownBy:'チーム共有済',improvement:'中'},
+  {id:'5-4',  phaseId:'P4',group:'動画確認・編集依頼',  eventType:'共通',       order:6,  taskName:'編集済み動画のUTAGEアーカイブアップをUTAGEチームへ依頼する',            taskDesc:'UTAGEへのアップ依頼送付',              decisionMaker:'AI',    policy:'自動化', aiScope:'依頼フロー自動化（通知トリガー）',humanCheck:'なし',                        knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-5',  phaseId:'P4',group:'アーカイブ配信・報告',eventType:'入学式',     order:7,  taskName:'アーカイブ動画URLをエルメでLINE自動配信する',                           taskDesc:'テンプレ配信の自動送付',               decisionMaker:'AI',    policy:'自動化', aiScope:'配信全般',                       humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-6',  phaseId:'P4',group:'アーカイブ配信・報告',eventType:'共通',       order:8,  taskName:'開催完了レポートを報告シートからSlackへ自動投稿する',                   taskDesc:'報告シート→Slackの自動連携',          decisionMaker:'AI',    policy:'自動化', aiScope:'集計・投稿全般',                 humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-9a', phaseId:'P4',group:'フォロー対応',        eventType:'入学式',     order:9,  taskName:'参加者メモとDiscordメンバーを照合し未登録者を特定する',                 taskDesc:'差分照合による未登録者抽出',           decisionMaker:'AI',    policy:'自動化', aiScope:'リスト差分照合・抽出全般',        humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-9b', phaseId:'P4',group:'フォロー対応',        eventType:'入学式',     order:10, taskName:'未登録者へのフォロー内容・優先度を決定する',                            taskDesc:'フォロー方針の意思決定',               decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'フォロー優先度・内容判断',     knownBy:'チーム共有済',improvement:'低'},
+  {id:'5-9c', phaseId:'P4',group:'フォロー対応',        eventType:'入学式',     order:11, taskName:'Discord未登録者へフォロー配信を送付する',                              taskDesc:'未登録者へのフォロー送付',             decisionMaker:'AI',    policy:'自動化', aiScope:'配信送付全般',                   humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-10', phaseId:'P4',group:'フォロー対応',        eventType:'入学式',     order:12, taskName:'DAY0出席後にDAY1-3不参加の会員へフォロー配信する',                     taskDesc:'不参加者フォローの自動化（未実装）',   decisionMaker:'人＋AI',policy:'要設計', aiScope:'不参加特定・配信（未実装）',     humanCheck:'フォロー内容・タイミング',     knownBy:'未整理',     improvement:'高'},
+  // P5
+  {id:'5-7a', phaseId:'P5',group:'アンケート集計・分析',eventType:'共通',       order:1,  taskName:'アンケート回答を集計・可視化する',                                      taskDesc:'回答データの集計とグラフ化',           decisionMaker:'AI',    policy:'自動化', aiScope:'集計・可視化の全工程',           humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-7b', phaseId:'P5',group:'アンケート集計・分析',eventType:'共通',       order:2,  taskName:'集計結果のサマリレポートをAIで生成する',                                taskDesc:'集計→レポート文の自動生成',            decisionMaker:'AI',    policy:'自動化', aiScope:'サマリ文生成の全工程',           humanCheck:'なし（たたきのみ）',           knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-7c', phaseId:'P5',group:'アンケート集計・分析',eventType:'共通',       order:3,  taskName:'レポートを確認し次回への示唆・解釈を付加する',                          taskDesc:'データ解釈・改善示唆の作成',           decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'解釈の妥当性・次回設計への反映',knownBy:'チーム共有済',improvement:'低'},
+  {id:'5-8',  phaseId:'P5',group:'アンケート集計・分析',eventType:'共通',       order:4,  taskName:'参加数・回答率を集約した報告シートを自動生成する',                      taskDesc:'KPIデータの自動集約',                  decisionMaker:'AI',    policy:'自動化', aiScope:'データ集約・シート生成全般',      humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-11a',phaseId:'P5',group:'振り返り・月次報告',  eventType:'共通',       order:5,  taskName:'開催振り返りをチームで実施し改善点を洗い出す',                          taskDesc:'振り返りミーティングの実施',           decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'改善点の議論・優先順位決定',   knownBy:'チーム共有済',improvement:'低'},
+  {id:'5-11b',phaseId:'P5',group:'振り返り・月次報告',  eventType:'共通',       order:6,  taskName:'改善点を整理し次回設計ドキュメントに反映する',                          taskDesc:'議論結果のドキュメント化',             decisionMaker:'人＋AI',policy:'効率化', aiScope:'議事録整理・ドキュメント更新',   humanCheck:'内容の正確性・抜け漏れ',       knownBy:'チーム共有済',improvement:'中'},
+  {id:'5-12a',phaseId:'P5',group:'振り返り・月次報告',  eventType:'共通',       order:7,  taskName:'月次OKR進捗データを集計・整形する',                                    taskDesc:'OKRデータの自動集計',                  decisionMaker:'AI',    policy:'自動化', aiScope:'集計・整形の全工程',             humanCheck:'なし',                         knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-12b',phaseId:'P5',group:'振り返り・月次報告',  eventType:'共通',       order:8,  taskName:'集計データをもとに報告ドラフトをAIで生成する',                          taskDesc:'月次報告文のドラフト生成',             decisionMaker:'AI',    policy:'自動化', aiScope:'報告文生成の全工程',             humanCheck:'なし（たたきのみ）',           knownBy:'チーム共有済',improvement:'高'},
+  {id:'5-12c',phaseId:'P5',group:'振り返り・月次報告',  eventType:'共通',       order:9,  taskName:'ドラフトを確認・修正し報告として確定する',                              taskDesc:'月次報告の最終確認・承認',             decisionMaker:'人',    policy:'維持',   aiScope:'なし',                      humanCheck:'内容の正確性・OKRとの整合性', knownBy:'チーム共有済',improvement:'低'},
+];
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+const dmCls  = dm => ({'人':'dm-human','AI':'dm-ai','人＋AI':'dm-mixed'}[dm]||'');
+const dmBd   = dm => ({'人':'bd-human','AI':'bd-ai','人＋AI':'bd-mixed'}[dm]||'');
+const poBd   = po => ({'自動化':'bd-auto','効率化':'bd-eff','維持':'bd-keep','要設計':'bd-dsn'}[po]||'');
+const evBd   = ev => ({'共通':'bd-ev-common','入学式':'bd-ev-nyugaku','ロードマップ':'bd-ev-road','ガイドツアー':'bd-ev-guide'}[ev]||'');
+const noneV  = v  => (!v||v==='なし'||v==='なし（たたきのみ）') ? 'none' : '';
+
+function detailHTML(t, prefix) {
+  return `
+    <div class="${prefix}-row"><span class="${prefix}-k">業務内容</span><span class="${prefix}-v">${t.taskDesc}</span></div>
+    <div class="${prefix}-row"><span class="${prefix}-k">AIの範囲</span><span class="${prefix}-v ${noneV(t.aiScope)}">${t.aiScope||'—'}</span></div>
+    <div class="${prefix}-row"><span class="${prefix}-k">人の確認点</span><span class="${prefix}-v ${noneV(t.humanCheck)}">${t.humanCheck||'—'}</span></div>`;
+}
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const F = {dm:'全て', po:'全て', ev:'全て'};
+let currentView = 'timeline';
+
+function filtered() {
+  return TASKS.filter(t =>
+    (F.dm==='全て'||t.decisionMaker===F.dm) &&
+    (F.po==='全て'||t.policy===F.po) &&
+    (F.ev==='全て'||t.eventType===F.ev)
+  );
+}
+
+// ══════════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════════
+function renderStats() {
+  const n  = TASKS.length;
+  const cd = dm => TASKS.filter(t=>t.decisionMaker===dm).length;
+  const cp = po => TASKS.filter(t=>t.policy===po).length;
+  document.getElementById('stats-row').innerHTML = `
+    <div class="sc s-total"><div class="sc-num">${n}</div><div class="sc-lb">総業務数</div></div>
+    <div class="sc s-human"><div class="sc-num">${cd('人')}</div><div class="sc-lb">人が判断</div></div>
+    <div class="sc s-ai"><div class="sc-num">${cd('AI')}</div><div class="sc-lb">AIが担当</div></div>
+    <div class="sc s-mixed"><div class="sc-num">${cd('人＋AI')}</div><div class="sc-lb">人＋AI協働</div></div>
+    <div class="sc s-auto"><div class="sc-num">${cp('自動化')}</div><div class="sc-lb">自動化候補</div></div>
+    <div class="sc s-eff"><div class="sc-num">${cp('効率化')}</div><div class="sc-lb">効率化候補</div></div>
+    <div class="sc s-keep"><div class="sc-num">${cp('維持')}</div><div class="sc-lb">人対応維持</div></div>`;
+}
+
+// ══════════════════════════════════════════════
+//  PHASE HEADER
+// ══════════════════════════════════════════════
+function phaseHeaderHTML(ph, allTasks, visibleTasks) {
+  const h  = visibleTasks.filter(t=>t.decisionMaker==='人').length;
+  const a  = visibleTasks.filter(t=>t.decisionMaker==='AI').length;
+  const m  = visibleTasks.filter(t=>t.decisionMaker==='人＋AI').length;
+  const tot= h+a+m;
+  const pw = v => tot>0 ? (v/tot*100).toFixed(0)+'%' : '0%';
+
+  let dom='', domCls='';
+  if(a>=h&&a>=m){dom='AI活用が多いフェーズ';domCls='dom-ai';}
+  else if(h>=a&&h>=m){dom='人判断が多いフェーズ';domCls='dom-human';}
+  else{dom='人＋AI協働が多いフェーズ';domCls='dom-mixed';}
+
+  return `
+  <div class="ph-head-top">
+    <div class="ph-left">
+      <div class="ph-badge ${ph.cls}">${ph.id}</div>
+      <div>
+        <div class="ph-name">${ph.name}</div>
+        <div class="ph-sub">${visibleTasks.length} 件表示 / 全 ${allTasks.length} 件</div>
+      </div>
+    </div>
+    <div class="ph-right">
+      <span class="ph-dominant ${domCls}">${dom}</span>
+      <span class="ph-arr open">›</span>
+    </div>
+  </div>
+  <div class="ph-statsbar">
+    <div class="ph-bar-wrap">
+      <div class="ph-bar-seg" style="width:${pw(h)};background:var(--human);"></div>
+      <div class="ph-bar-seg" style="width:${pw(a)};background:var(--ai);"></div>
+      <div class="ph-bar-seg" style="width:${pw(m)};background:var(--mixed);"></div>
+    </div>
+    <div class="ph-bar-legend">
+      ${h?`<span class="ph-bar-item"><div class="ph-bar-dot" style="background:var(--human);"></div>人 ${h}</span>`:''}
+      ${a?`<span class="ph-bar-item"><div class="ph-bar-dot" style="background:var(--ai);"></div>AI ${a}</span>`:''}
+      ${m?`<span class="ph-bar-item"><div class="ph-bar-dot" style="background:var(--mixed);"></div>人＋AI ${m}</span>`:''}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  SUBGROUP HELPER
+// ══════════════════════════════════════════════
+function groupTasks(tasks) {
+  const map = new Map();
+  tasks.forEach(t => {
+    const g = t.group || '—';
+    if(!map.has(g)) map.set(g,[]);
+    map.get(g).push(t);
+  });
+  return map;
+}
+
+// ══════════════════════════════════════════════
+//  TIMELINE VIEW
+// ══════════════════════════════════════════════
+function renderTimeline(tasks) {
+  const groups = groupTasks(tasks);
+  let html = '';
+  groups.forEach((gTasks, gName) => {
+    html += `<div class="sg-block">
+      <div class="sg-head">
+        <div class="sg-icon"></div>
+        <span class="sg-name">${gName}</span>
+        <span class="sg-count">${gTasks.length}件</span>
+      </div>
+      <div class="tl-list">`;
+    gTasks.forEach(t => {
+      html += `
+      <div class="tr ${dmCls(t.decisionMaker)}" onclick="toggleItem(this)">
+        <div class="tr-dot"></div>
+        <div class="tr-main">
+          <div class="tr-top">
+            <span class="tr-id">${t.id}</span>
+            <span class="tr-name">${t.taskName}</span>
+            <div class="tr-badges">
+              <span class="badge ${evBd(t.eventType)}">${t.eventType}</span>
+              <span class="badge ${dmBd(t.decisionMaker)}">${t.decisionMaker}</span>
+              <span class="badge ${poBd(t.policy)}">${t.policy}</span>
+            </div>
+            <span class="tr-toggle">+</span>
+          </div>
+          <div class="tr-detail">${detailHTML(t,'td')}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  return html;
+}
+
+// ══════════════════════════════════════════════
+//  CARD VIEW (2col)
+// ══════════════════════════════════════════════
+function renderCard(tasks) {
+  const groups = groupTasks(tasks);
+  let html = '';
+  groups.forEach((gTasks, gName) => {
+    html += `<div class="sg-block">
+      <div class="sg-head">
+        <div class="sg-icon"></div>
+        <span class="sg-name">${gName}</span>
+        <span class="sg-count">${gTasks.length}件</span>
+      </div>
+      <div class="card-grid">`;
+    gTasks.forEach(t => {
+      html += `
+      <div class="cc ${dmCls(t.decisionMaker)}" onclick="toggleItem(this)">
+        <div class="cc-top">
+          <div class="cc-stripe"></div>
+          <span class="cc-id">${t.id}</span>
+          <span class="cc-name">${t.taskName}</span>
+          <div class="cc-badges">
+            <span class="badge ${evBd(t.eventType)}">${t.eventType}</span>
+            <span class="badge ${dmBd(t.decisionMaker)}">${t.decisionMaker}</span>
+            <span class="badge ${poBd(t.policy)}">${t.policy}</span>
+          </div>
+          <span class="cc-toggle">+</span>
+        </div>
+        <div class="cc-detail">${detailHTML(t,'cd')}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  return html;
+}
+
+// ══════════════════════════════════════════════
+//  LIST VIEW
+// ══════════════════════════════════════════════
+function renderList(tasks) {
+  let html = `<div class="lt-head">
+    <div>#</div><div>業務名</div><div>種別</div><div>判断主体</div><div>対応方針</div><div></div>
+  </div>`;
+  tasks.forEach((t,i) => {
+    html += `
+    <div class="lt-row" onclick="toggleListRow(this)">
+      <div class="lt-id">${t.id}</div>
+      <div class="lt-name">${t.taskName}</div>
+      <div class="lt-ev"><span class="badge ${evBd(t.eventType)}">${t.eventType}</span></div>
+      <div class="lt-dm"><span class="badge ${dmBd(t.decisionMaker)}">${t.decisionMaker}</span></div>
+      <div class="lt-po"><span class="badge ${poBd(t.policy)}">${t.policy}</span></div>
+      <div class="lt-tog">+</div>
+    </div>
+    <div class="lt-detail-row" style="display:none;">
+      <div class="lt-detail-inner">${detailHTML(t,'lt-di')}</div>
+    </div>`;
+  });
+  return html;
+}
+
+function toggleListRow(row) {
+  const detail = row.nextElementSibling;
+  const tog = row.querySelector('.lt-tog');
+  const isOpen = row.classList.toggle('open');
+  detail.style.display = isOpen ? 'block' : 'none';
+  tog.textContent = isOpen ? '×' : '+';
+  tog.style.transform = isOpen ? 'rotate(45deg)' : '';
+}
+
+// ══════════════════════════════════════════════
+//  FLOW RENDER
+// ══════════════════════════════════════════════
+function renderFlow() {
+  const tasks = filtered();
+  const container = document.getElementById('flow-container');
+  container.innerHTML = '';
+
+  PHASES.forEach(ph => {
+    const allPh = TASKS.filter(t=>t.phaseId===ph.id);
+    const visPh = tasks.filter(t=>t.phaseId===ph.id);
+
+    const block = document.createElement('div');
+    block.className = 'phase-block';
+
+    let bodyHTML = '';
+    if(currentView==='timeline'){
+      bodyHTML = `<div class="view-timeline">${visPh.length>0?renderTimeline(visPh):'<div class="no-results">一致する業務がありません</div>'}</div>`;
+    } else if(currentView==='card'){
+      bodyHTML = `<div class="view-card">${visPh.length>0?renderCard(visPh):'<div class="no-results">一致する業務がありません</div>'}</div>`;
+    } else {
+      bodyHTML = `<div class="view-list">${visPh.length>0?renderList(visPh):'<div class="no-results">一致する業務がありません</div>'}</div>`;
+    }
+
+    block.innerHTML = `
+      <div class="ph-head" onclick="togglePhase(this)">${phaseHeaderHTML(ph,allPh,visPh)}</div>
+      <div class="ph-body">${bodyHTML}</div>`;
+    container.appendChild(block);
+  });
+
+  document.getElementById('filter-count').textContent = `${tasks.length} / ${TASKS.length} 件表示`;
+}
+
+function toggleItem(el) {
+  el.classList.toggle('open');
+  const tog = el.querySelector('.tr-toggle,.cc-toggle');
+  if(tog) tog.textContent = el.classList.contains('open') ? '×' : '+';
+}
+
+function togglePhase(head) {
+  const body  = head.nextElementSibling;
+  const arrow = head.querySelector('.ph-arr');
+  body.classList.toggle('hidden');
+  arrow.classList.toggle('open');
+}
+
+// ══════════════════════════════════════════════
+//  QUESTIONS
+// ══════════════════════════════════════════════
+function makeBar(label,count,total,color){
+  return `<div class="q-bar">
+    <span class="q-bl">${label}</span>
+    <div class="q-bt"><div class="q-bf" style="width:${(count/total*100).toFixed(0)}%;background:${color};"></div></div>
+    <span class="q-bv">${count}</span>
+  </div>`;
+}
+function renderQ(){
+  const n=TASKS.length;
+  document.getElementById('q1-h').textContent=TASKS.filter(t=>t.decisionMaker==='人').length;
+  document.getElementById('q3-h').textContent=TASKS.filter(t=>t.improvement==='高').length;
+  document.getElementById('q2-bars').innerHTML=
+    makeBar('自動化',TASKS.filter(t=>t.policy==='自動化').length,n,'var(--ai)')+
+    makeBar('効率化',TASKS.filter(t=>t.policy==='効率化').length,n,'var(--mixed)')+
+    makeBar('人維持', TASKS.filter(t=>t.policy==='維持').length,n,'#94A3B8')+
+    makeBar('要設計', TASKS.filter(t=>t.policy==='要設計').length,n,'#E11D48');
+  document.getElementById('q4-bars').innerHTML=
+    makeBar('チーム共有済',TASKS.filter(t=>t.knownBy==='チーム共有済').length,n,'var(--ai)')+
+    makeBar('1人のみ',    TASKS.filter(t=>t.knownBy==='1人のみ').length,n,'#E11D48')+
+    makeBar('未整理',     TASKS.filter(t=>t.knownBy==='未整理').length,n,'#F59E0B');
+}
+
+// ══════════════════════════════════════════════
+//  IMPROVEMENT
+// ══════════════════════════════════════════════
+function renderImp(){
+  const autoT=TASKS.filter(t=>t.policy==='自動化'&&t.improvement==='高');
+  const effT =TASKS.filter(t=>t.policy==='効率化');
+  const keepT=TASKS.filter(t=>t.policy==='維持'&&t.decisionMaker==='人');
+  document.getElementById('auto-cnt').textContent=`${autoT.length}件（改善余地：高）`;
+  document.getElementById('eff-cnt').textContent=`${effT.length}件`;
+  document.getElementById('keep-cnt').textContent=`${keepT.length}件`;
+  const makeList=(arr)=>arr.map(t=>`
+    <div class="imp-item"><span class="imp-iid">${t.id}</span>${t.taskName}
+    <div class="imp-note">${t.policy==='維持'?'確認点: '+t.humanCheck:'AIの範囲: '+t.aiScope}</div></div>`).join('');
+  document.getElementById('auto-list').innerHTML=makeList(autoT.slice(0,8))+(autoT.length>8?`<div class="imp-item" style="color:#94A3B8;">他 ${autoT.length-8} 件</div>`:'');
+  document.getElementById('eff-list').innerHTML=makeList(effT);
+  document.getElementById('keep-list').innerHTML=makeList(keepT);
+}
+
+// ══════════════════════════════════════════════
+//  EVENT LISTENERS
+// ══════════════════════════════════════════════
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const g=c.dataset.g, v=c.dataset.v;
+    F[g]=v;
+    document.querySelectorAll(`.chip[data-g="${g}"]`).forEach(x=>x.classList.remove('on'));
+    c.classList.add('on');
+    renderFlow();
+  });
+});
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  F.dm='全て';F.po='全て';F.ev='全て';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.v==='全て'));
+  renderFlow();
+});
+document.querySelectorAll('.vtab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    currentView=btn.dataset.view;
+    document.querySelectorAll('.vtab').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    renderFlow();
+  });
+});
+
+// ── INIT ──
+renderStats();
+renderFlow();
+renderQ();
+renderImp();
+</script>
+</body>
+</html>
