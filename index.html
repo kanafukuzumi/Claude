@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入学式改善提案 ― 実践コース参加導線の再設計</title>
+<style>
+  :root {
+    --bg: #F7F8FA;
+    --surface: #FFFFFF;
+    --primary: #1A3558;
+    --accent: #2563EB;
+    --accent-light: #EFF6FF;
+    --success: #059669;
+    --success-light: #ECFDF5;
+    --warning: #D97706;
+    --warning-light: #FFFBEB;
+    --danger: #DC2626;
+    --danger-light: #FEF2F2;
+    --neutral: #6B7280;
+    --neutral-light: #F3F4F6;
+    --border: #E5E7EB;
+    --text: #111827;
+    --text-secondary: #4B5563;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.06);
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", "Yu Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 24px 80px; }
+  section { margin-bottom: 64px; }
+
+  .section-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  h2 { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 6px; line-height: 1.4; }
+  h3 { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+
+  .section-desc { color: var(--text-secondary); margin-bottom: 24px; font-size: 14px; }
+
+  /* HEADER */
+  .page-header { background: var(--primary); color: #fff; padding: 56px 0 48px; margin-bottom: 48px; }
+  .page-header .wrap { padding-bottom: 0; }
+  .page-header .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 4px; margin-bottom: 16px;
+  }
+  .page-header h1 { font-size: 32px; font-weight: 800; line-height: 1.3; margin-bottom: 10px; }
+  .page-header .subtitle { font-size: 15px; color: rgba(255,255,255,0.7); margin-bottom: 32px; }
+  .header-meta {
+    display: flex; gap: 24px; font-size: 13px; color: rgba(255,255,255,0.5);
+    border-top: 1px solid rgba(255,255,255,0.12); padding-top: 20px;
+  }
+
+  /* CARDS */
+  .card { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 28px 32px; margin-bottom: 16px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* EXEC SUMMARY */
+  .exec-summary {
+    background: linear-gradient(135deg, #1A3558 0%, #2563EB 100%);
+    border-radius: var(--radius-lg); padding: 36px 40px; color: #fff;
+    margin-bottom: 64px; box-shadow: var(--shadow-md);
+  }
+  .exec-summary .label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: rgba(255,255,255,0.65); margin-bottom: 8px; }
+  .exec-summary > h2 { color: #fff; font-size: 20px; margin-bottom: 24px; font-weight: 800; }
+
+  .exec-points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .exec-point {
+    background: #FFFFFF;
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    display: flex; flex-direction: column;
+  }
+  .exec-point .num {
+    font-size: 11px; font-weight: 800; color: var(--accent);
+    letter-spacing: 0.12em; margin-bottom: 10px; display: block;
+  }
+  .exec-point .headline {
+    font-size: 15px; font-weight: 800; color: var(--primary);
+    line-height: 1.55; margin-bottom: 10px;
+  }
+  .exec-point .subtext { font-size: 13px; color: var(--text-secondary); line-height: 1.75; flex: 1; }
+
+  /* Keyword highlights */
+  .kw { background: #FEF08A; color: #78350F; font-weight: 800; padding: 1px 4px; border-radius: 3px; }
+
+  /* TRIGGER CARDS */
+  .trigger-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .trigger-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 18px; border-top: 3px solid var(--accent); }
+  .trigger-card .icon { font-size: 22px; margin-bottom: 8px; display: block; }
+  .trigger-card .title { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+  .trigger-card .desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ISSUE LIST */
+  .issue-list { list-style: none; }
+  .issue-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .issue-item:last-child { border-bottom: none; }
+  .issue-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--warning-light); color: var(--warning); font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .issue-content .title { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+  .issue-content .desc { font-size: 13px; color: var(--text-secondary); }
+
+  /* DATA */
+  .data-table-wrap { overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { background: var(--primary); color: #fff; }
+  thead th { padding: 10px 16px; text-align: center; font-weight: 600; font-size: 13px; letter-spacing: 0.03em; }
+  thead th:first-child { text-align: left; border-radius: var(--radius) 0 0 0; }
+  thead th:last-child { border-radius: 0 var(--radius) 0 0; }
+  tbody tr:nth-child(even) { background: var(--neutral-light); }
+  tbody tr:hover { background: var(--accent-light); }
+  tbody td { padding: 10px 16px; text-align: center; border-bottom: 1px solid var(--border); font-size: 14px; }
+  tbody td:first-child { text-align: left; font-weight: 600; }
+
+  .val-danger { color: var(--danger) !important; }
+  .val-warning { color: var(--warning) !important; }
+  .val-success { color: var(--success) !important; }
+
+  /* INSIGHT / WARN BOX */
+  .insight-box { background: var(--accent-light); border-left: 4px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 16px 20px; margin-top: 16px; font-size: 14px; color: var(--primary); }
+  .insight-box strong { font-weight: 700; }
+  .warn-box { background: var(--warning-light); border-left: 4px solid var(--warning); border-radius: 0 var(--radius) var(--radius) 0; padding: 16px 20px; margin-top: 12px; font-size: 14px; color: #92400e; }
+
+  /* QA TAGS */
+  .qa-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .tag-item { font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+  .tag-issue { background: var(--danger-light); color: var(--danger); }
+  .tag-warn  { background: var(--warning-light); color: #92400e; }
+  .tag-info  { background: var(--accent-light); color: var(--accent); }
+
+  /* FLOW */
+  .flow-container { display: flex; align-items: center; gap: 0; margin: 24px 0; overflow-x: auto; }
+  .flow-node { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px 16px; text-align: center; min-width: 130px; flex-shrink: 0; box-shadow: var(--shadow); }
+  .flow-node .node-icon { font-size: 20px; margin-bottom: 4px; display: block; }
+  .flow-node .node-label { font-size: 12px; font-weight: 700; color: var(--primary); }
+  .flow-node .node-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .flow-node.bottleneck { border-color: var(--danger); background: var(--danger-light); }
+  .flow-node.bottleneck .node-label { color: var(--danger); }
+  .flow-node.goal { border-color: var(--success); background: var(--success-light); }
+  .flow-node.goal .node-label { color: var(--success); }
+  .flow-arrow { width: 36px; text-align: center; font-size: 18px; color: var(--neutral); flex-shrink: 0; }
+  .bottleneck-label { display: inline-block; background: var(--danger); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-top: 6px; }
+
+  .key-insight { background: var(--primary); color: #fff; border-radius: var(--radius-lg); padding: 28px 32px; margin-top: 24px; }
+  .key-insight h3 { color: #fff; font-size: 15px; margin-bottom: 16px; }
+  .key-insight .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ki-item { background: rgba(255,255,255,0.08); border-radius: var(--radius); padding: 14px 16px; }
+  .ki-item .ki-label { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 700; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .ki-item .ki-text { font-size: 14px; color: rgba(255,255,255,0.9); line-height: 1.6; }
+
+  /* LOAD DESIGN */
+  .load-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .load-card { border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .load-card.unregistered { background: var(--danger-light); border: 1.5px solid #FCA5A5; }
+  .load-card.registered { background: var(--success-light); border: 1.5px solid #6EE7B7; }
+  .load-card .load-header { font-size: 13px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .load-card.unregistered .load-header { color: var(--danger); }
+  .load-card.registered .load-header { color: var(--success); }
+  .load-card .load-step { font-size: 12px; color: var(--text); padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.07); display: flex; align-items: flex-start; gap: 8px; line-height: 1.6; }
+  .load-card .load-step:last-child { border-bottom: none; }
+  .step-num { font-size: 10px; font-weight: 800; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; color: #fff; }
+  .load-card.unregistered .step-num { background: var(--danger); }
+  .load-card.registered .step-num { background: var(--success); }
+
+  /* PHASE DESIGN */
+  .phase-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 20px 0; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); }
+  .phase-card { padding: 22px 20px; position: relative; }
+  .phase-card:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 16px; bottom: 16px; width: 1px; background: rgba(255,255,255,0.2); }
+  .phase-card.pre { background: #1E3A5F; }
+  .phase-card.day { background: var(--accent); }
+  .phase-card.post { background: #1A7F5A; }
+  .phase-card .phase-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; margin-bottom: 6px; }
+  .phase-card .phase-title { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 12px; line-height: 1.3; }
+  .phase-card .phase-goal { font-size: 12px; color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.13); border-radius: 6px; padding: 6px 10px; margin-bottom: 12px; font-weight: 700; }
+  .phase-card .phase-item { font-size: 13px; color: rgba(255,255,255,0.88); padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; gap: 7px; align-items: flex-start; line-height: 1.6; }
+  .phase-card .phase-item:last-child { border-bottom: none; }
+  .pi-dot { flex-shrink: 0; margin-top: 8px; width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+
+  /* CRITERIA BOX */
+  .criteria-box { background: var(--primary); border-radius: var(--radius-lg); padding: 28px 32px; margin-top: 20px; }
+  .criteria-box h3 { color: #fff; font-size: 15px; margin-bottom: 20px; }
+  .criteria-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .criteria-item { background: rgba(255,255,255,0.08); border-radius: var(--radius); padding: 16px 14px; text-align: center; }
+  .criteria-item .c-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+  .criteria-item .c-role { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 0.1em; margin-bottom: 5px; }
+  .criteria-item .c-label { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.45; }
+
+  /* CONCEPT CARDS */
+  .concept-card { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 24px 28px; border-left: 4px solid var(--accent); }
+  .concept-card .c-num { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 8px; }
+  .concept-card h3 { font-size: 15px; margin-bottom: 8px; }
+  .concept-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+
+  /* BEFORE/AFTER */
+  .ba-section { margin-bottom: 36px; }
+  .ba-section h3 { margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ba-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .ba-header { padding: 10px 18px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; }
+  .ba-header.before { background: #FEE2E2; color: #991B1B; }
+  .ba-header.after  { background: #D1FAE5; color: #065F46; }
+  .ba-body { padding: 16px 18px; }
+  .ba-item { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--text); padding: 5px 0; border-bottom: 1px solid var(--border); line-height: 1.6; }
+  .ba-item:last-child { border-bottom: none; }
+  .ba-item .bullet { flex-shrink: 0; margin-top: 4px; font-size: 10px; }
+  .ba-item .before-bullet { color: var(--danger); }
+  .ba-item .after-bullet { color: var(--success); }
+
+  /* TEAM REQUEST BOX */
+  .team-request-box { background: var(--warning-light); border: 1.5px solid #FCD34D; border-radius: var(--radius-lg); padding: 22px 26px; margin-top: 16px; }
+  .trb-header { font-size: 13px; font-weight: 700; color: #92400e; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .trb-body { font-size: 13px; color: var(--text); line-height: 1.75; }
+  .trb-body ul { list-style: none; margin-top: 10px; }
+  .trb-body li { padding: 5px 0 5px 18px; position: relative; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 13px; color: var(--text); }
+  .trb-body li:last-child { border-bottom: none; }
+  .trb-body li::before { content: '→'; position: absolute; left: 0; color: var(--warning); font-weight: 700; }
+
+  /* TIMELINE */
+  .timeline-table table thead tr { background: #1E3A5F; }
+  .time-badge { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+  .fixed-badge { display: inline-block; background: var(--success-light); color: var(--success); font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+  .compress-badge { display: inline-block; background: var(--warning-light); color: var(--warning); font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+
+  /* EFFECTS */
+  .effect-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px; display: flex; gap: 14px; align-items: flex-start; }
+  .effect-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .effect-icon.blue { background: var(--accent-light); }
+  .effect-icon.green { background: var(--success-light); }
+  .effect-icon.amber { background: var(--warning-light); }
+  .effect-card .title { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .effect-card .desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* FINAL SUMMARY */
+  .final-summary { background: var(--primary); border-radius: var(--radius-lg); padding: 40px 44px; color: #fff; margin-top: 48px; }
+  .final-summary h2 { color: #fff; font-size: 20px; margin-bottom: 6px; }
+  .final-summary .sub { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 28px; }
+  .summary-point { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: flex-start; }
+  .summary-point:last-child { border-bottom: none; }
+  .sp-num { width: 24px; height: 24px; background: var(--accent); border-radius: 50%; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .sp-text { font-size: 14px; color: rgba(255,255,255,0.9); line-height: 1.7; }
+  .sp-text strong { color: #fff; }
+
+  /* MISC */
+  .footnote { font-size: 12px; color: var(--text-secondary); margin-top: 10px; line-height: 1.6; }
+  .footnote::before { content: "※ "; }
+  .stat-row { display: flex; gap: 16px; }
+  .stat-item { flex: 1; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 18px; text-align: center; }
+  .stat-item .stat-num { font-size: 32px; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 4px; }
+  .stat-item .stat-unit { font-size: 16px; font-weight: 700; }
+  .stat-item .stat-label { font-size: 12px; color: var(--text-secondary); }
+  .stat-item.accent .stat-num { color: var(--accent); }
+  .stat-item.danger .stat-num { color: var(--danger); }
+  .stat-item.success .stat-num { color: var(--success); }
+  .stat-item.warning .stat-num { color: var(--warning); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="wrap">
+    <div class="tag">INTERNAL PROPOSAL</div>
+    <h1>入学式 改善提案</h1>
+    <p class="subtitle">実践コース参加導線の再設計 ― 90分設計への見直し</p>
+    <div class="header-meta">
+      <span>対象：入学式ウェビナー（全5回）</span>
+      <span>分析期間：2026年3月〜4月</span>
+      <span>作成：2026年4月</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- EXECUTIVE SUMMARY -->
+<div class="exec-summary">
+  <div class="label">EXECUTIVE SUMMARY</div>
+  <h2>この資料が伝えたい3つのこと</h2>
+  <div class="exec-points">
+    <div class="exec-point">
+      <span class="num">POINT 01</span>
+      <div class="headline">Discord登録完了と<br>実践コース参加は<span class="kw">別問題</span>である</div>
+      <div class="subtext">Discord登録は「継続の基盤づくり」。コース参加は「入学式の目的」。この2つを同じ問題として扱うことが、設計の混乱を生んでいる。</div>
+    </div>
+    <div class="exec-point">
+      <span class="num">POINT 02</span>
+      <div class="headline">入学式の目的は「翌日のコースに<span class="kw">参加したくなる状態</span>を作ること」</div>
+      <div class="subtext">ツール設定を完了させる場ではない。翌日の実践コースへの期待と行動意欲を生む場として再設計する。</div>
+    </div>
+    <div class="exec-point">
+      <span class="num">POINT 03</span>
+      <div class="headline">改善の方向は「削る」でなく、価値を保ちながら<span class="kw">役割を再配置</span>する</div>
+      <div class="subtext">Discordの重要性は変わらない。問題はその存在ではなく、入学式内での扱い方・比重・深さにある。</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SECTION 1 -->
+<section>
+  <div class="section-label">BACKGROUND</div>
+  <h2>見直しのきっかけ</h2>
+  <p class="section-desc">以下の4点が重なり、入学式設計の見直しを検討するに至った。</p>
+  <div class="trigger-grid">
+    <div class="trigger-card">
+      <span class="icon">⏱</span>
+      <div class="title">時間の延長</div>
+      <div class="desc">第1回101分から第5回141分へ、回を重ねるごとに延長が拡大している。また、進行の長時間化に伴い、モデレーターの負担も増加している可能性がある。</div>
+    </div>
+    <div class="trigger-card">
+      <span class="icon">💬</span>
+      <div class="title">Q&A負荷の増大</div>
+      <div class="desc">同じ質問が毎回繰り返され、後半は回答が追いつかない状態が常態化している。</div>
+    </div>
+    <div class="trigger-card">
+      <span class="icon">📊</span>
+      <div class="title">参加率の頭打ち</div>
+      <div class="desc">第2回以降の実践コース参加率が37〜39%で安定するが、改善の余地があると考えられる。</div>
+    </div>
+    <div class="trigger-card">
+      <span class="icon">🎯</span>
+      <div class="title">目的との乖離</div>
+      <div class="desc">入学式の設計が「翌日の行動喚起」より「当日の環境整備」に重心が寄っている可能性がある。</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SECTION 2 -->
+<section>
+  <div class="section-label">CURRENT ISSUES</div>
+  <h2>現状課題の整理</h2>
+  <p class="section-desc">5回分のデータと構造分析から、以下の課題が見えてきた。</p>
+  <div class="card" style="padding: 8px 24px;">
+    <ul class="issue-list">
+      <li class="issue-item">
+        <div class="issue-icon">⏰</div>
+        <div class="issue-content">
+          <div class="title">入学式が100〜141分に延長している</div>
+          <div class="desc">90分基準に対し、最大51分の超過（第5回）。回を重ねるごとに延長幅が拡大している。</div>
+        </div>
+      </li>
+      <li class="issue-item">
+        <div class="issue-icon">📦</div>
+        <div class="issue-content">
+          <div class="title">1回に詰め込む情報量が多い</div>
+          <div class="desc">Discord登録・会員サイト案内・コース診断・サポート体制説明・3日間プログラム案内・アンケートが1セッションに集中している。</div>
+        </div>
+      </li>
+      <li class="issue-item">
+        <div class="issue-icon">🔁</div>
+        <div class="issue-content">
+          <div class="title">同じ質問が毎回繰り返されている</div>
+          <div class="desc">「自己紹介ボタンが見つからない」「アーカイブはどこで見られるか」など、FAQ化できる質問が5回通じて計30件以上繰り返されている。</div>
+        </div>
+      </li>
+      <li class="issue-item">
+        <div class="issue-icon">🚧</div>
+        <div class="issue-content">
+          <div class="title">前半でつまずいた人に後半情報が届きにくい</div>
+          <div class="desc">Discord登録でつまずいている間も入学式は進行する。コース選択など後半の重要情報が届いていない可能性がある。</div>
+        </div>
+      </li>
+      <li class="issue-item">
+        <div class="issue-icon">🧭</div>
+        <div class="issue-content">
+          <div class="title">疑問解消の導線が弱い</div>
+          <div class="desc">Q&Aに誘導するが後半は回答が追いつかない。Discordに誘導するが、Discord自体に入れていない人が多いという矛盾がある。</div>
+        </div>
+      </li>
+      <li class="issue-item">
+        <div class="issue-icon">⚖️</div>
+        <div class="issue-content">
+          <div class="title">行動喚起より環境整備の比重が高い</div>
+          <div class="desc">入学式の本来目的（翌日の実践コースへの期待形成・参加動機の醸成）に対し、ツール設定の比重が相対的に大きくなっている可能性がある。</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- SECTION 3 -->
+<section>
+  <div class="section-label">DATA ANALYSIS</div>
+  <h2>データ分析結果</h2>
+  <p class="section-desc">5回分の定量データを整理する。因果関係は断定せず、改善可能な構造要因への仮説として読み取る。</p>
+
+  <div class="stat-row" style="margin-bottom: 24px;">
+    <div class="stat-item danger">
+      <div class="stat-num">141<span class="stat-unit">分</span></div>
+      <div class="stat-label">第5回 入学式総時間（最長）</div>
+    </div>
+    <div class="stat-item warning">
+      <div class="stat-num">24<span class="stat-unit">%</span></div>
+      <div class="stat-label">第1回 実践コース参加率（最低）</div>
+    </div>
+    <div class="stat-item accent">
+      <div class="stat-num">118<span class="stat-unit">件</span></div>
+      <div class="stat-label">第1回 Q&A件数（最多）</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 24px;">
+    <h3>5回比較 ― 主要指標</h3>
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>第1回<br><span style="font-weight:400;font-size:11px;">3/21</span></th>
+            <th>第2回<br><span style="font-weight:400;font-size:11px;">3/28</span></th>
+            <th>第3回<br><span style="font-weight:400;font-size:11px;">4/4</span></th>
+            <th>第4回<br><span style="font-weight:400;font-size:11px;">4/11</span></th>
+            <th>第5回<br><span style="font-weight:400;font-size:11px;">4/18</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>入学式 総時間</td><td>101分</td><td>100分</td><td>117分</td><td>118分</td><td class="val-danger">141分</td></tr>
+          <tr><td>90分基準 超過</td><td>+11分</td><td>+10分</td><td>+27分</td><td>+28分</td><td class="val-danger">+51分</td></tr>
+          <tr><td>入学式 参加者数</td><td>214名</td><td>224名</td><td>218名</td><td>164名</td><td>149名</td></tr>
+          <tr><td>実践コース 参加率</td><td class="val-danger"><strong>24%</strong></td><td>37%</td><td>38%</td><td class="val-success">39%</td><td>37%</td></tr>
+          <tr><td>Q&A 件数</td><td class="val-danger"><strong>118件</strong></td><td>115件</td><td>46件</td><td>94件</td><td>87件</td></tr>
+          <tr><td>質疑応答 時間</td><td>10分</td><td>実質なし</td><td>17分</td><td>17分</td><td class="val-danger"><strong>43分</strong></td></tr>
+          <tr><td>Discord登録デモ</td><td class="val-danger"><strong>20分</strong></td><td>13分</td><td>16分</td><td>15分</td><td>19分</td></tr>
+          <tr><td>動機付けセクション<br><span style="font-size:11px;font-weight:400;">（成果者共通点）</span></td><td class="val-danger"><strong>8分</strong></td><td>13分</td><td>17分</td><td>13分</td><td>13分</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="insight-box">
+      <strong>注目点：</strong>第1回は「導入が13分（他回の3倍）→動機付けセクションが8分に圧縮→初歩質問が59%」という構造的な問題が重なり、参加率が24%となった。第2回以降は構成改善などにより37〜39%で安定しているが、担当者交代との因果関係は明確ではない。
+    </div>
+    <div class="warn-box">
+      <strong>重要：</strong>入学式の時間が長いほど参加率が下がる、という単純な相関は見られない。時間の長さより、<strong>構成・順序・情報の密度</strong>が参加率に影響している可能性が高い。参加率が37〜39%で頭打ちになっている理由は、時間ではなく設計そのものにある。
+    </div>
+  </div>
+
+  <div class="card" style="padding: 24px; margin-top: 16px;">
+    <h3>Q&A 分析 ― 要点整理</h3>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--primary); margin-bottom:10px;">繰り返し出ている主要質問（FAQ化候補）</div>
+        <ul style="list-style:none; font-size:13px; color:var(--text-secondary);">
+          <li style="padding:5px 0; border-bottom:1px solid var(--border);">🔁 自己紹介ボタン（青いボタン）が見つからない ― 全5回・30件以上</li>
+          <li style="padding:5px 0; border-bottom:1px solid var(--border);">🔁 「このチャンネルでメッセージ送信権限がない」 ― 全5回・20件以上</li>
+          <li style="padding:5px 0; border-bottom:1px solid var(--border);">🔁 Discord招待リンクを教えてください ― 全5回・20件以上</li>
+          <li style="padding:5px 0; border-bottom:1px solid var(--border);">🔁 アーカイブはどこで見られるか ― 第2〜5回・25件以上</li>
+          <li style="padding:5px 0;">🔁 コースに参加できない日がある、アーカイブで代替できるか ― 第2〜5回・20件以上</li>
+        </ul>
+        <div class="insight-box" style="margin-top:12px; font-size:13px;">
+          <strong>動画改善の余地：</strong>繰り返し質問の内容を見ると、登録ガイド動画のブラッシュアップで事前に解消できるものが多い。当日スタッフを増員するより、動画を改善する方がスケールする。
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--primary); margin-bottom:10px;">Q&Aパターンの特徴</div>
+        <div class="qa-tags">
+          <span class="tag-item tag-issue">初歩質問が全体の40〜59%</span>
+          <span class="tag-item tag-issue">Discord登録デモ直後に質問が集中</span>
+          <span class="tag-item tag-warn">後半は未回答質問が積み上がる</span>
+          <span class="tag-item tag-warn">「ついていけない」「早すぎる」という声</span>
+          <span class="tag-item tag-info">後半は行動質問が増加（コース・日程・アーカイブ）</span>
+          <span class="tag-item tag-info">質疑応答43分でも参加率は改善しない</span>
+        </div>
+        <div style="margin-top:14px; font-size:12px; color:var(--text-secondary); line-height:1.7;">
+          Q&A件数が最少だった第3回（46件）と参加率（38%）は他の回と比較して遜色なく、むしろ安定している。多くのQ&Aが参加率の改善に直結していない可能性を示す。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SECTION 4 -->
+<section>
+  <div class="section-label">BOTTLENECK</div>
+  <h2>ボトルネックの整理</h2>
+  <p class="section-desc">入学式の情報フローと、参加者が詰まるポイントを可視化する。</p>
+
+  <div class="card" style="padding: 28px;">
+    <div style="font-size:13px; font-weight:700; color:var(--text-secondary); margin-bottom:16px;">入学式 情報フロー（現状）</div>
+    <div class="flow-container">
+      <div class="flow-node">
+        <span class="node-icon">📣</span>
+        <div class="node-label">導入・ビジョン</div>
+        <div class="node-sub">5〜13分</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node bottleneck">
+        <span class="node-icon">🔧</span>
+        <div class="node-label">Discord登録デモ</div>
+        <div class="node-sub">13〜20分</div>
+        <div class="bottleneck-label">詰まりポイント</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <span class="node-icon">✍️</span>
+        <div class="node-label">自己紹介・投稿</div>
+        <div class="node-sub">7〜11分</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <span class="node-icon">💡</span>
+        <div class="node-label">動機付け</div>
+        <div class="node-sub">8〜17分</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node bottleneck">
+        <span class="node-icon">💻</span>
+        <div class="node-label">会員サイト・コース診断</div>
+        <div class="node-sub">20〜24分</div>
+        <div class="bottleneck-label">情報過多</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node goal">
+        <span class="node-icon">🎯</span>
+        <div class="node-label">実践コース参加</div>
+        <div class="node-sub">【本来の目的】</div>
+      </div>
+    </div>
+    <div style="margin-top:20px; padding:16px 18px; background:var(--neutral-light); border-radius:var(--radius); font-size:13px; color:var(--text-secondary); line-height:1.7;">
+      <strong style="color:var(--danger);">問題：</strong>Discord登録でつまずいた参加者は、後続の「動機付け」「コース選択」に到達しにくい。前半のつまずきが後半の行動喚起を遮断している。
+    </div>
+  </div>
+
+  <div class="key-insight">
+    <h3>核心的な整理</h3>
+    <div class="two-col">
+      <div class="ki-item">
+        <div class="ki-label">手段</div>
+        <div class="ki-text">Discord登録完了<br>会員サイトへのアクセス<br>コース診断ボットの操作</div>
+      </div>
+      <div class="ki-item">
+        <div class="ki-label">目的</div>
+        <div class="ki-text">翌日の実践コースに<br>リアルタイムで参加したくなること<br>成果に向けて動き出すこと</div>
+      </div>
+    </div>
+    <div style="margin-top:16px; padding:14px 16px; background:rgba(255,255,255,0.08); border-radius:var(--radius); font-size:14px; color:rgba(255,255,255,0.9); line-height:1.7;">
+      現状、<strong style="color:#fff;">手段の充実</strong>に時間を使い、<strong style="color:#fff;">目的の達成</strong>が後回しになっている可能性がある。<br>
+      入学式は「Discord登録を完了させる場」ではなく、「翌日から動き出す状態を作る場」である。
+    </div>
+  </div>
+
+  <!-- Discord負荷設計問題 -->
+  <div class="card" style="padding: 28px; margin-top: 16px;">
+    <h3>Discordパートの負荷設計問題 ― 「全員に同じ設計」が生む構造的矛盾</h3>
+    <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px; line-height:1.75;">
+      現状のDiscordパートは、登録状況によって参加者の負荷が大きく異なるにもかかわらず、全員を同じ進行で扱っている。「未登録者のつまずき」と「登録済み者の待ち時間」を同時に生む設計上の矛盾である。
+    </p>
+    <div class="load-compare">
+      <div class="load-card unregistered">
+        <div class="load-header">⚠️ 未登録者（当日初めて触れる）</div>
+        <div class="load-step"><span class="step-num">1</span>アカウント作成</div>
+        <div class="load-step"><span class="step-num">2</span>メール認証</div>
+        <div class="load-step"><span class="step-num">3</span>サーバー参加（招待リンク）</div>
+        <div class="load-step"><span class="step-num">4</span>自己紹介チャンネルへ移動</div>
+        <div class="load-step"><span class="step-num">5</span>自己紹介を投稿</div>
+        <div class="load-step"><span class="step-num">6</span>他の人の投稿にリアクション</div>
+        <div class="load-step"><span class="step-num">7</span>メンション・返信の操作</div>
+        <div style="margin-top:10px; font-size:12px; color:var(--danger); font-weight:700; line-height:1.6;">→ 手順が多く、どこかでつまずくと後続を追えない</div>
+      </div>
+      <div class="load-card registered">
+        <div class="load-header">✅ 登録済み者（事前に完了している）</div>
+        <div class="load-step"><span class="step-num">1</span>自己紹介を投稿</div>
+        <div class="load-step"><span class="step-num">2</span>他の人の投稿にリアクション</div>
+        <div class="load-step"><span class="step-num">3</span>（メンション・返信は任意）</div>
+        <div style="margin-top:12px; padding:8px 10px; background:rgba(5,150,105,0.08); border-radius:6px; font-size:12px; color:var(--text-secondary); line-height:1.6;">
+          既に登録を終えているため、登録デモの間は実質的な待機状態になる。入学式参加者の一定数がこの状態にある。
+        </div>
+        <div style="margin-top:10px; font-size:12px; color:var(--success); font-weight:700; line-height:1.6;">→ 未登録者の処理を待つ間、前に進めない</div>
+      </div>
+    </div>
+    <div class="warn-box" style="margin-top:4px;">
+      <strong>構造的な問題：</strong>事前に登録案内と登録方法動画を既に送っているにもかかわらず、当日も同じ情報を重く扱うのは構造的な無駄である。Discordチームが毎回2名待機してQ&A対応しているが、繰り返し質問の多さは「当日の人員」では根本解決しない。事前と事後の導線を整備する方がスケールする。
+    </div>
+  </div>
+
+  <div class="card" style="padding: 24px; margin-top: 16px;">
+    <h3>ボトルネック候補の一覧</h3>
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40%">ボトルネック</th>
+            <th>現状</th>
+            <th>影響</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Discord登録デモの比重が大きい</td><td>13〜20分を占有。未登録者数で毎回ブレる</td><td class="val-danger">大</td></tr>
+          <tr><td>できる人・できない人を同じ進行で扱っている</td><td>未登録者に合わせると全員が待機状態になる</td><td class="val-danger">大</td></tr>
+          <tr><td>動機付けセクションの時間が圧迫されやすい</td><td>第1回は8分（他回の半分）に短縮された</td><td class="val-danger">大</td></tr>
+          <tr><td>コース診断ボットのバグが全5回で発生</td><td>本番中にデバッグする構造が継続</td><td class="val-warning">中</td></tr>
+          <tr><td>繰り返し質問がFAQ化されていない</td><td>スタッフ対応が飽和し後半回答が追いつかない</td><td class="val-warning">中</td></tr>
+          <tr><td>アーカイブへの逃げ道が強調されすぎている</td><td>リアルタイム参加の優先度が下がりやすい</td><td class="val-warning">中</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- SECTION 5 -->
+<section>
+  <div class="section-label">DESIGN PRINCIPLE</div>
+  <h2>設計見直しの考え方</h2>
+  <p class="section-desc">この提案は「Discordを削る」ためのものではない。入学式の中での役割分担を再設計する。</p>
+
+  <div class="grid-3">
+    <div class="concept-card">
+      <div class="c-num">PRINCIPLE 01</div>
+      <h3>Discordは削らない。役割を変える。</h3>
+      <p>Discord登録は重要。ただし、「その場で全員を完了させる設計」から「体験＋確認＋後続フォロー」に変える。入学式内では登録体験に留め、フォローアップを後に回す。</p>
+    </div>
+    <div class="concept-card">
+      <div class="c-num">PRINCIPLE 02</div>
+      <h3>価値を守りながら手段を置き換える。</h3>
+      <p>問題提起・ビジョン共有・動機付け・コミュニティ体験は守る。これらは入学式の本質であり、削れない。削るのは「繰り返し」「脱線」「全員完了を待つ時間」だけ。</p>
+    </div>
+    <div class="concept-card">
+      <div class="c-num">PRINCIPLE 03</div>
+      <h3>行動喚起を前半に持ってくる。</h3>
+      <p>動機付けセクションの時間を守り、前半のうちに「翌日からやりたい」という気持ちを形成する。コース選択はその後に置く。意欲が先、手続きが後。</p>
+    </div>
+  </div>
+
+  <!-- 判断基準の明示 -->
+  <div class="criteria-box">
+    <h3>📌 判断基準の明示 ― この設計はどこへ向かっているか</h3>
+    <div class="criteria-grid">
+      <div class="criteria-item">
+        <span class="c-icon">🛠️</span>
+        <div class="c-role">MEANS（手段）</div>
+        <div class="c-label">Discord登録</div>
+      </div>
+      <div class="criteria-item">
+        <span class="c-icon">🎯</span>
+        <div class="c-role">GOAL（目的）</div>
+        <div class="c-label">実践コース参加</div>
+      </div>
+      <div class="criteria-item">
+        <span class="c-icon">🚀</span>
+        <div class="c-role">入学式の役割</div>
+        <div class="c-label">行動の起点を作る</div>
+      </div>
+      <div class="criteria-item">
+        <span class="c-icon">🌐</span>
+        <div class="c-role">Discordの役割</div>
+        <div class="c-label">継続の基盤を作る</div>
+      </div>
+    </div>
+    <div style="margin-top:16px; padding:14px 16px; background:rgba(255,255,255,0.07); border-radius:var(--radius); font-size:13px; color:rgba(255,255,255,0.88); line-height:1.8;">
+      入学式内で優先すべきは「目的」への導線。<strong style="color:#fff;">Discordは手段であり基盤。目的ではない。</strong><br>
+      「入学式でDiscordを完了させる」という発想を、「入学式でコース参加への意欲を完成させる」に切り替える。
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px; padding: 24px;">
+    <h3 style="margin-bottom:16px;">守るもの・変えるもの</h3>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; color:var(--success); margin-bottom:10px; padding: 6px 12px; background: var(--success-light); border-radius:6px; display:inline-block;">KEEP ― 守る価値</div>
+        <ul style="list-style:none; font-size:13px; color:var(--text); margin-top:10px;">
+          <li style="padding:6px 0; border-bottom:1px solid var(--border);">✅ 「日本をAI先進国に」のビジョン共有（2分）</li>
+          <li style="padding:6px 0; border-bottom:1px solid var(--border);">✅ 成果者共通点・行動指針（10分・固定）</li>
+          <li style="padding:6px 0; border-bottom:1px solid var(--border);">✅ Discord自己紹介・同期投稿体験（10分）</li>
+          <li style="padding:6px 0; border-bottom:1px solid var(--border);">✅ 4種のサポート体制の案内（3分）</li>
+          <li style="padding:6px 0;">✅ 実践コース選択・申し込み（9分）</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; color:var(--warning); margin-bottom:10px; padding: 6px 12px; background: var(--warning-light); border-radius:6px; display:inline-block;">CHANGE ― 変える手段</div>
+        <ul style="list-style:none; font-size:13px; color:var(--text); margin-top:10px;">
+          <li style="padding:6px 0; border-bottom:1px solid var(--border);">🔄 Discord登録デモ：20分→当日確認10分（事前送付に移行）</li>
+          <li style="padding:6px 0; border-bottom:1px solid var(--border);">🔄 質疑応答：無制限→10分上限（FAQ化で事前処理）</li>
+          <li style="padding:6px 0; border-bottom:1px solid var(--border);">🔄 会員サイトデモ：全項目→今日確認すべき3点のみ</li>
+          <li style="padding:6px 0; border-bottom:1px solid var(--border);">🔄 ボットバグ：その場で解決→30秒で代替案内に切り替え</li>
+          <li style="padding:6px 0;">🔄 念押し繰り返し：3〜4回→1回（スライドに明記）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SECTION 6 -->
+<section>
+  <div class="section-label">PROPOSAL</div>
+  <h2>改善提案</h2>
+  <p class="section-desc">3つのパートに分けて、具体的なBefore / Afterを示す。</p>
+
+  <!-- Discordパート -->
+  <div class="ba-section">
+    <h3>① Discordパート ― 登録完了の設計から体験の設計へ</h3>
+    <div class="ba-grid">
+      <div class="ba-card">
+        <div class="ba-header before">BEFORE ― 現状</div>
+        <div class="ba-body">
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>事前に案内・動画を送っているが、入学式でも全員と一緒に登録を進める（13〜20分）</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>未登録者に合わせて全員を待機させる設計</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>スタッフ2名がQ&Aで個別対応（人件費・運用負荷が発生）</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>トラブル発生でも全員を待たせてその場で解決しようとする</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>メンション・返信・リアクションの「説明」を積み上げる形で追加していく</div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-header after">AFTER ― 改善案</div>
+        <div class="ba-body">
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>申込確認メールにDiscord登録ガイドURL・動画を添付（事前完了を促す）</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>当日は「登録できましたか？」の確認5分に留める</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>未登録者にはFAQ・動画・Discord相談室を案内してスキップ</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>説明の積み上げではなく、自己紹介＋リアクションを2〜3分のハンズオン体験に置き換える</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>全員完了を待たず10分で次へ。残りはDiscord相談室でフォロー</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Discordチーム要望への対応方針 -->
+    <div class="team-request-box">
+      <div class="trb-header">💬 Discordチームの要望に対する対応方針</div>
+      <div class="trb-body">
+        <p>「登録率を上げたい」というDiscordチームの課題意識は理解できる。ただし、入学式でのDiscordパートのボリュームを維持したまま扱うと、情報過多をさらに助長する可能性が高い。対応方針は以下の通り。</p>
+        <ul>
+          <li>メンション・返信・リアクションの説明を「足す」のではなく、詳細説明を2〜3分のハンズオンに<strong>置き換える</strong>形で対応する</li>
+          <li>登録率の向上は、入学式での時間拡大ではなく、登録動画のブラッシュアップで対応する（Q&Aの内容から改善余地は大きい）</li>
+          <li>サーバー参加までの不明点は、ChatGPTやGeminiなどの生成AIに聞くことで自己解決できるケースも多い（入学式内で「わからない箇所はAIに聞いてみてください」と案内する）</li>
+          <li>サーバー参加後はDiscord内の相談室を活用できる仕組みが既にある</li>
+          <li>当日スタッフ2名常駐も、事前・事後の導線が整備されれば段階的に見直せる</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 事前・当日・事後の分離設計 -->
+    <div style="margin-top: 22px;">
+      <div style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:12px;">事前・当日・事後の役割分担設計</div>
+      <div class="phase-grid">
+        <div class="phase-card pre">
+          <div class="phase-label">BEFORE ― 事前</div>
+          <div class="phase-title">8割を<br>ここで解決</div>
+          <div class="phase-goal">登録動画改善＋FAQ整備＋生成AI活用の案内</div>
+          <div class="phase-item"><span class="pi-dot"></span>登録ガイド動画のブラッシュアップ</div>
+          <div class="phase-item"><span class="pi-dot"></span>よくあるトラブルFAQの整備</div>
+          <div class="phase-item"><span class="pi-dot"></span>「わからない箇所はChatGPT・Gemini等に聞いてみて」と案内</div>
+          <div class="phase-item"><span class="pi-dot"></span>申込確認メールにURLを添付</div>
+        </div>
+        <div class="phase-card day">
+          <div class="phase-label">DAY ― 当日入学式</div>
+          <div class="phase-title">確認と<br>体験に絞る</div>
+          <div class="phase-goal">登録確認5分＋体験ハンズオン10分</div>
+          <div class="phase-item"><span class="pi-dot"></span>「登録できましたか？」確認のみ</div>
+          <div class="phase-item"><span class="pi-dot"></span>未登録者はスキップ（後でフォロー）</div>
+          <div class="phase-item"><span class="pi-dot"></span>自己紹介・リアクションのハンズオン</div>
+          <div class="phase-item"><span class="pi-dot"></span>説明の積み上げではなく体験で完結</div>
+          <div class="phase-item"><span class="pi-dot"></span>「わからない箇所はChatGPT・Gemini等にも聞けます」と当日も案内する</div>
+        </div>
+        <div class="phase-card post">
+          <div class="phase-label">AFTER ― 事後</div>
+          <div class="phase-title">個別解決は<br>ここへ</div>
+          <div class="phase-goal">なんでも相談室＋質問bot＋フォローアップメール</div>
+          <div class="phase-item"><span class="pi-dot"></span>「なんでも相談室」チャンネルへ案内</div>
+          <div class="phase-item"><span class="pi-dot"></span>「Discordの質問はこちら」チャンネルへ案内</div>
+          <div class="phase-item"><span class="pi-dot"></span>質問botの活用案内</div>
+          <div class="phase-item"><span class="pi-dot"></span>入学式後のフォローアップメールで再案内</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="footnote">Discordチームの要望（登録率向上）に対しては、事前メールのブラッシュアップと登録動画の改善で対応する。「説明を増やす」のではなく、事前・当日・事後で役割を分担することで、登録率の向上と参加者体験の両立を目指す。入学式での扱いを変えることはDiscordの重要性を否定するものではない。</p>
+  </div>
+
+  <!-- 実践コース参加導線 -->
+  <div class="ba-section">
+    <h3>② 実践コース参加導線 ― 動機形成を前半に</h3>
+    <div class="ba-grid">
+      <div class="ba-card">
+        <div class="ba-header before">BEFORE ― 現状</div>
+        <div class="ba-body">
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>動機付けセクション（成果者共通点）が削られやすく、8〜17分とブレる</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>コース選択はセッション後半（80〜90分）に案内される</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>前半でつまずいた人にはコース選択の案内が届いていない可能性</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>「アーカイブで見ればいい」という誘導が繰り返されすぎている</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>コース登録完了の確認方法が不明で不安が残る</div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-header after">AFTER ― 改善案</div>
+        <div class="ba-body">
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>動機付けセクションを10分に固定（スライド枚数を固定する）</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>「翌日の実践コースで何が起きるか」を具体的に伝える時間を確保</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>コース選択リンクはボットだけでなく直接URLも併記する（コース診断ボットは補助として位置づける）</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>リアルタイム参加の価値（翌日その場で学べる・仲間と同時進行できる）を明確に伝える</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>コース登録完了画面を明確化し、確認方法を案内する</div>
+        </div>
+      </div>
+    </div>
+    <p class="footnote">実践コース参加率が37〜39%で頭打ちになっている理由は断定しない。ただし、コース選択の案内が後半に集中していること・リアルタイム参加の優先度が下がりやすい導線になっていることは、改善可能な構造要因として整理できる。</p>
+  </div>
+
+  <!-- Q&A導線 -->
+  <div class="ba-section">
+    <h3>③ Q&A導線 ― その場での全解消から、構造的な解消設計へ</h3>
+    <div class="ba-grid">
+      <div class="ba-card">
+        <div class="ba-header before">BEFORE ― 現状</div>
+        <div class="ba-body">
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>毎回同じ質問をスタッフが個別回答（繰り返しコスト）</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>後半は回答が追いつかず未回答のまま終了</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>「Discord相談室へ」と誘導するが、Discordに入れていない人が多い</div>
+          <div class="ba-item"><span class="bullet before-bullet">✕</span>質疑応答を「終わり次第締める」運用で時間制御できない</div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-header after">AFTER ― 改善案</div>
+        <div class="ba-body">
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>繰り返し質問（TOP5）をFAQページに整備し、Q&Aチャットに固定リンクを貼る</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>「疑問があったらどこに行けばいいか」を冒頭で案内する</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>NotebookLM Q&AボットをQ&A開始前に全員に案内する</div>
+          <div class="ba-item"><span class="bullet after-bullet">✓</span>質疑応答は10分上限。「最後の1問」を宣言して時計で締める</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SECTION 7 -->
+<section>
+  <div class="section-label">90-MIN DESIGN</div>
+  <h2>改善後の90分設計（タイムライン）</h2>
+  <p class="section-desc">全対策を実施した場合、第5回（141分）は90分前後に収まる計算になる。</p>
+
+  <div class="card" style="padding: 24px;">
+    <div class="data-table-wrap timeline-table">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%">時間帯</th>
+            <th style="width:30%">セクション</th>
+            <th style="width:9%">配分</th>
+            <th>設計の意図と変更点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>00:00〜05:00</td><td>導入①（開会・ルール説明）</td><td><span class="time-badge">5分</span></td><td>Q&A使い方・注意事項のみ。冒頭でFAQリンクを固定表示</td></tr>
+          <tr><td>05:00〜06:30</td><td>導入②（入会時期確認）</td><td><span class="time-badge">1.5分</span></td><td>チャット確認のみ。簡潔に同期感を作る</td></tr>
+          <tr><td>06:30〜08:30</td><td>問題提起（日本のAI課題）</td><td><span class="fixed-badge">2分・固定</span></td><td>全回2分を維持できている。そのまま</td></tr>
+          <tr><td>08:30〜12:30</td><td>解決策提示①（SHIFTAIの価値・本日の目標）</td><td><span class="fixed-badge">4分・固定</span></td><td>「アーカイブある」は1回だけ言う。スライドで視覚担保</td></tr>
+          <tr><td>12:30〜17:30</td><td>解決策提示②（Discord紹介）</td><td><span class="time-badge">5分</span></td><td>特長説明のみ。インタラクション（地域確認）は削除</td></tr>
+          <tr><td>17:30〜20:00</td><td>デモ①（Discord画面・自己紹介デモ）</td><td><span class="time-badge">2.5分</span></td><td>チャンネル構造の確認のみ</td></tr>
+          <tr><td>20:00〜30:00</td><td>デモ②（Discord登録手順）</td><td><span class="compress-badge">10分・圧縮</span></td><td>事前URL送付済み前提。「詰まった方はチャットへ」で10分で打ち切り。全員を待たない</td></tr>
+          <tr><td>30:00〜40:00</td><td>実習（Discord自己紹介・同期投稿）</td><td><span class="fixed-badge">10分・固定</span></td><td>入学体験の核心。削らない</td></tr>
+          <tr><td>40:00〜42:00</td><td>解説（Discordチャンネル紹介）</td><td><span class="time-badge">2分</span></td><td>主要3チャンネルのみ案内</td></tr>
+          <tr><td>42:00〜52:00</td><td>具体例（成果を出す人の共通点）</td><td><span class="fixed-badge">10分・固定</span></td><td><strong>スライド枚数固定。</strong>担当者裁量でのブレを防ぐ。削れない核心</td></tr>
+          <tr><td>52:00〜54:00</td><td>小休憩・後半導入</td><td><span class="fixed-badge">2分・固定</span></td><td>参加者の集中リセットに機能している。省略しない</td></tr>
+          <tr><td>54:00〜64:00</td><td>デモ③（会員サイト操作）</td><td><span class="compress-badge">10分・圧縮</span></td><td>「今日確認すべき3点」のみ。①アーカイブ②イベント情報③マイページ</td></tr>
+          <tr><td>64:00〜67:00</td><td>解決策提示③（4種のサポート体制）</td><td><span class="time-badge">3分</span></td><td>固定スライド。現状通り</td></tr>
+          <tr style="background: var(--success-light);">
+            <td>67:00〜76:00</td>
+            <td><strong style="color:var(--success);">デモ④（実践コース説明・選択導線）</strong><br><span style="font-size:11px; color:var(--success); font-weight:600;">▶ 翌日の行動につながるメインアクション</span></td>
+            <td><span class="compress-badge">9分・圧縮</span></td>
+            <td>翌日から始まる実践コースの違い・選び方・参加方法を案内する。直接URLを画面に明示し、診断ボットは補助として位置づける。登録完了の確認方法まで案内する。ボットバグ時は30秒で代替導線に切り替え</td>
+          </tr>
+          <tr><td>76:00〜80:00</td><td>まとめ・クロージング</td><td><span class="time-badge">4分</span></td><td>アンケート・Discord今日の宣言・X投稿の3点のみ</td></tr>
+          <tr style="background: var(--accent-light);"><td>80:00〜90:00</td><td><strong>質疑応答</strong></td><td><span class="fixed-badge">10分・厳守</span></td><td>FAQはDiscord相談室に誘導。9分で「最後の1問」と宣言</td></tr>
+          <tr style="background: var(--primary); color: #fff;">
+            <td colspan="2"><strong style="color:#fff;">合計</strong></td>
+            <td colspan="2"><strong style="color:#fff;">90分</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px; padding:14px 18px; background:var(--success-light); border-left:4px solid var(--success); border-radius:0 var(--radius) var(--radius) 0; font-size:13px; color:#065F46; line-height:1.7;">
+      <strong>コース選択の位置づけ（67〜76分）：</strong>動機付けセクション（42〜52分）で「やりたい」という意欲を形成した後、後半の最重要アクションとして配置。前半のDiscordパートでつまずいた人でも、このセクションには確実に到達できる順序になっている。
+    </div>
+    <div class="insight-box" style="margin-top:12px;">
+      <strong>削減効果の試算：</strong>Discord登録デモ圧縮▲10分 ＋ 質疑応答上限設定▲最大33分（第5回比） ＋ 脱線・繰り返し削除▲5分 ＋ 会員サイト絞り込み▲4分 ＝ <strong>最大▲52分</strong>。第5回（141分）が90分前後に収まる計算。
+    </div>
+  </div>
+</section>
+
+
+<!-- SECTION 8 -->
+<section>
+  <div class="section-label">EXPECTED EFFECTS</div>
+  <h2>期待される効果</h2>
+  <p class="section-desc">直接効果・間接効果・運用コスト改善の3軸で整理する。</p>
+
+  <div class="grid-3" style="margin-bottom:16px;">
+    <div class="effect-card">
+      <div class="effect-icon blue">📉</div>
+      <div>
+        <div class="title">入学式の時間短縮</div>
+        <div class="desc">最大51分の超過が解消。141分→90分前後を目指す。参加者の集中が維持しやすくなる。</div>
+      </div>
+    </div>
+    <div class="effect-card">
+      <div class="effect-icon green">🎯</div>
+      <div>
+        <div class="title">行動喚起の強化</div>
+        <div class="desc">動機付けセクション（10分固定）が守られることで、翌日の実践コース参加への期待形成が安定する。</div>
+      </div>
+    </div>
+    <div class="effect-card">
+      <div class="effect-icon amber">👤</div>
+      <div>
+        <div class="title">モデレーター負担の軽減</div>
+        <div class="desc">Q&A上限・FAQ化・ボットバグ代替案内の設計により、その場での判断・対応コストが大幅に下がる。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="effect-card">
+      <div class="effect-icon blue">💬</div>
+      <div>
+        <div class="title">繰り返し質問の削減</div>
+        <div class="desc">FAQ化・事前資料化・登録動画改善により、毎回30件以上発生している繰り返し質問をほぼ解消できる。スタッフの個別対応時間が減少。</div>
+      </div>
+    </div>
+    <div class="effect-card">
+      <div class="effect-icon amber">💸</div>
+      <div>
+        <div class="title">Discordチーム待機コストの見直し余地</div>
+        <div class="desc">FAQ整備・事前登録化・登録動画改善が進めば、入学式当日のスタッフ2名常駐の必要性を段階的に見直すことができる。スケールする設計になる。</div>
+      </div>
+    </div>
+    <div class="effect-card">
+      <div class="effect-icon green">📚</div>
+      <div>
+        <div class="title">入学式本来の目的への回帰</div>
+        <div class="desc">「環境整備の場」から「翌日からの行動起点の場」へ。参加者が次に何をすべきかを明確に持って終了できる。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FINAL SUMMARY -->
+<div class="final-summary">
+  <h2>提案の要点まとめ</h2>
+  <p class="sub">この提案が伝えたいことを4点に集約する</p>
+
+  <div class="summary-point">
+    <div class="sp-num">1</div>
+    <div class="sp-text">
+      <strong>Discord登録完了と実践コース参加は別の問題。</strong><br>
+      Discord登録は継続の基盤づくりであり、入学式の目的（実践コース参加）とは切り離して設計すべき。両者を同じ問題として扱うことが設計の混乱を生んでいる。
+    </div>
+  </div>
+
+  <div class="summary-point">
+    <div class="sp-num">2</div>
+    <div class="sp-text">
+      <strong>入学式の目的は「翌日の実践コースに参加したくなる状態を作ること」。</strong><br>
+      そのために必要なのは動機付けの時間と行動導線の明確化。現状はツール設定の比重が相対的に高くなっている。入学式では「登録完了率」より「翌日からの行動喚起」に比重を置くべきである。
+    </div>
+  </div>
+
+  <div class="summary-point">
+    <div class="sp-num">3</div>
+    <div class="sp-text">
+      <strong>Discordは重要。扱い方と役割を変えることで価値は守れる。</strong><br>
+      「事前：登録動画改善→当日：確認＋軽い体験→事後：なんでも相談室・質問bot・FAQ」への移行が有力。現場で人を増やして対応するより、事前と事後の導線を改善する方がスケールする。
+    </div>
+  </div>
+
+  <div class="summary-point">
+    <div class="sp-num">4</div>
+    <div class="sp-text">
+      <strong>今回の提案は「削る」ためではなく、「目的に対して再配置する」ための見直しである。</strong><br>
+      守る要素はしっかり守り、変える手段を変える。「追加ではなく置き換え」「完了ではなく体験」がこの設計の核心。90分設計は時間短縮が目的ではなく、参加者体験の品質を確保するための基準である。
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div style="background: #E5E7EB; height: 1px; margin: 0;"></div>
+<div style="text-align:center; padding: 20px; font-size:12px; color:#9CA3AF;">
+  SHIFT AI 入学式 改善提案資料 ― 2026年4月 作成
+</div>
+
+</body>
+</html>
